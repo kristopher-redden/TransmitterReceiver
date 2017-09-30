@@ -4,9 +4,10 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/kristopher/Projects/TransmitterReceiver/ApplicationLayer.cpp" "/home/kristopher/Projects/TransmitterReceiver/cmake-build-debug/CMakeFiles/TransmitterReceiver.dir/ApplicationLayer.cpp.o"
-  "/home/kristopher/Projects/TransmitterReceiver/PhysicalLayer.cpp" "/home/kristopher/Projects/TransmitterReceiver/cmake-build-debug/CMakeFiles/TransmitterReceiver.dir/PhysicalLayer.cpp.o"
-  "/home/kristopher/Projects/TransmitterReceiver/main.cpp" "/home/kristopher/Projects/TransmitterReceiver/cmake-build-debug/CMakeFiles/TransmitterReceiver.dir/main.cpp.o"
+  "/home/kristopher/Documents/GitClone/TransmitterReceiver/ApplicationLayer.cpp" "/home/kristopher/Documents/GitClone/TransmitterReceiver/cmake-build-debug/CMakeFiles/TransmitterReceiver.dir/ApplicationLayer.cpp.o"
+  "/home/kristopher/Documents/GitClone/TransmitterReceiver/DataLinkLayer.cpp" "/home/kristopher/Documents/GitClone/TransmitterReceiver/cmake-build-debug/CMakeFiles/TransmitterReceiver.dir/DataLinkLayer.cpp.o"
+  "/home/kristopher/Documents/GitClone/TransmitterReceiver/PhysicalLayer.cpp" "/home/kristopher/Documents/GitClone/TransmitterReceiver/cmake-build-debug/CMakeFiles/TransmitterReceiver.dir/PhysicalLayer.cpp.o"
+  "/home/kristopher/Documents/GitClone/TransmitterReceiver/main.cpp" "/home/kristopher/Documents/GitClone/TransmitterReceiver/cmake-build-debug/CMakeFiles/TransmitterReceiver.dir/main.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 

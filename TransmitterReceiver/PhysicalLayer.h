@@ -10,8 +10,8 @@ using namespace std;
 class PhysicalLayer
 {
 public:
-    void Encode(string character);
-    void Decode(string character);
+    void Encode(string dataField, string outputFile);
+    void Decode(char character);
     PhysicalLayer();
     ~PhysicalLayer();
 

@@ -48,10 +48,10 @@ RM = /home/kristopher/Documents/clion-2017.2.2/bin/cmake/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/kristopher/Projects/TransmitterReceiver
+CMAKE_SOURCE_DIR = /home/kristopher/Documents/GitClone/TransmitterReceiver
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/kristopher/Projects/TransmitterReceiver/cmake-build-debug
+CMAKE_BINARY_DIR = /home/kristopher/Documents/GitClone/TransmitterReceiver/cmake-build-debug
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -80,9 +80,9 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/kristopher/Projects/TransmitterReceiver/cmake-build-debug/CMakeFiles /home/kristopher/Projects/TransmitterReceiver/cmake-build-debug/CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/kristopher/Documents/GitClone/TransmitterReceiver/cmake-build-debug/CMakeFiles /home/kristopher/Documents/GitClone/TransmitterReceiver/cmake-build-debug/CMakeFiles/progress.marks
 	$(MAKE) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/kristopher/Projects/TransmitterReceiver/cmake-build-debug/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/kristopher/Documents/GitClone/TransmitterReceiver/cmake-build-debug/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -150,6 +150,33 @@ ApplicationLayer.cpp.s:
 	$(MAKE) -f CMakeFiles/TransmitterReceiver.dir/build.make CMakeFiles/TransmitterReceiver.dir/ApplicationLayer.cpp.s
 .PHONY : ApplicationLayer.cpp.s
 
+DataLinkLayer.o: DataLinkLayer.cpp.o
+
+.PHONY : DataLinkLayer.o
+
+# target to build an object file
+DataLinkLayer.cpp.o:
+	$(MAKE) -f CMakeFiles/TransmitterReceiver.dir/build.make CMakeFiles/TransmitterReceiver.dir/DataLinkLayer.cpp.o
+.PHONY : DataLinkLayer.cpp.o
+
+DataLinkLayer.i: DataLinkLayer.cpp.i
+
+.PHONY : DataLinkLayer.i
+
+# target to preprocess a source file
+DataLinkLayer.cpp.i:
+	$(MAKE) -f CMakeFiles/TransmitterReceiver.dir/build.make CMakeFiles/TransmitterReceiver.dir/DataLinkLayer.cpp.i
+.PHONY : DataLinkLayer.cpp.i
+
+DataLinkLayer.s: DataLinkLayer.cpp.s
+
+.PHONY : DataLinkLayer.s
+
+# target to generate assembly for a file
+DataLinkLayer.cpp.s:
+	$(MAKE) -f CMakeFiles/TransmitterReceiver.dir/build.make CMakeFiles/TransmitterReceiver.dir/DataLinkLayer.cpp.s
+.PHONY : DataLinkLayer.cpp.s
+
 PhysicalLayer.o: PhysicalLayer.cpp.o
 
 .PHONY : PhysicalLayer.o
@@ -216,6 +243,9 @@ help:
 	@echo "... ApplicationLayer.o"
 	@echo "... ApplicationLayer.i"
 	@echo "... ApplicationLayer.s"
+	@echo "... DataLinkLayer.o"
+	@echo "... DataLinkLayer.i"
+	@echo "... DataLinkLayer.s"
 	@echo "... PhysicalLayer.o"
 	@echo "... PhysicalLayer.i"
 	@echo "... PhysicalLayer.s"

@@ -6,11 +6,11 @@
 
 #IncludeRegexTransform: 
 
-/home/kristopher/Projects/TransmitterReceiver/ApplicationLayer.cpp
+/home/kristopher/Documents/GitClone/TransmitterReceiver/ApplicationLayer.cpp
 ApplicationLayer.h
-/home/kristopher/Projects/TransmitterReceiver/ApplicationLayer.h
+/home/kristopher/Documents/GitClone/TransmitterReceiver/ApplicationLayer.h
 PhysicalLayer.h
-/home/kristopher/Projects/TransmitterReceiver/PhysicalLayer.h
+/home/kristopher/Documents/GitClone/TransmitterReceiver/PhysicalLayer.h
 iostream
 -
 string
@@ -18,23 +18,25 @@ string
 fstream
 -
 
-/home/kristopher/Projects/TransmitterReceiver/ApplicationLayer.h
+/home/kristopher/Documents/GitClone/TransmitterReceiver/ApplicationLayer.h
 string
 -
 
-/home/kristopher/Projects/TransmitterReceiver/PhysicalLayer.cpp
+/home/kristopher/Documents/GitClone/TransmitterReceiver/PhysicalLayer.cpp
 PhysicalLayer.h
-/home/kristopher/Projects/TransmitterReceiver/PhysicalLayer.h
+/home/kristopher/Documents/GitClone/TransmitterReceiver/PhysicalLayer.h
+iostream
+-
 
-/home/kristopher/Projects/TransmitterReceiver/PhysicalLayer.h
+/home/kristopher/Documents/GitClone/TransmitterReceiver/PhysicalLayer.h
 string
 -
 
-/home/kristopher/Projects/TransmitterReceiver/main.cpp
+/home/kristopher/Documents/GitClone/TransmitterReceiver/main.cpp
 iostream
 -
 string
 -
 ApplicationLayer.h
-/home/kristopher/Projects/TransmitterReceiver/ApplicationLayer.h
+/home/kristopher/Documents/GitClone/TransmitterReceiver/ApplicationLayer.h
 

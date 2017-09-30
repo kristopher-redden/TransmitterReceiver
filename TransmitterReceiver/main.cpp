@@ -19,6 +19,8 @@ int main(int argc, char* argv[]) {
         {
             file1 = argv[2];
             file2 = argv[3];
+            ApplicationLayer al;
+            al.CommandT(file1, file2);
         }
         else
         {

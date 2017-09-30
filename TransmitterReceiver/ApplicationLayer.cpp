@@ -21,11 +21,25 @@ ApplicationLayer::~ApplicationLayer()
 
 void ApplicationLayer::CommandT(string file1, string file2)
 {
+    PhysicalLayer pl;
     ifstream ifs(file1, ios::in | ios::binary);
     if (ifs.good())
     {
         char character;
-        while (ifs.get(character));
+        string dataField;
+        int charCount = 0;
+        while (ifs.get(character))
+        {
+            charCount++;
+            dataField += character;
+            if (charCount == 8)
+            {
+                pl.Encode(dataField, file2);
+                dataField = "";
+            }
+        }
+        pl.Encode(dataField, file2);
+
 
     }
     //ofstream ofs(file2, ios::out)
