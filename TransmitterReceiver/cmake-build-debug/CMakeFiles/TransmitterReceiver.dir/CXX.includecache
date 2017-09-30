@@ -1,0 +1,40 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/kristopher/Projects/TransmitterReceiver/ApplicationLayer.cpp
+ApplicationLayer.h
+/home/kristopher/Projects/TransmitterReceiver/ApplicationLayer.h
+PhysicalLayer.h
+/home/kristopher/Projects/TransmitterReceiver/PhysicalLayer.h
+iostream
+-
+string
+-
+fstream
+-
+
+/home/kristopher/Projects/TransmitterReceiver/ApplicationLayer.h
+string
+-
+
+/home/kristopher/Projects/TransmitterReceiver/PhysicalLayer.cpp
+PhysicalLayer.h
+/home/kristopher/Projects/TransmitterReceiver/PhysicalLayer.h
+
+/home/kristopher/Projects/TransmitterReceiver/PhysicalLayer.h
+string
+-
+
+/home/kristopher/Projects/TransmitterReceiver/main.cpp
+iostream
+-
+string
+-
+ApplicationLayer.h
+/home/kristopher/Projects/TransmitterReceiver/ApplicationLayer.h
+

@@ -1,0 +1,1 @@
+/usr/bin/c++  -g   CMakeFiles/TransmitterReceiver.dir/main.cpp.o CMakeFiles/TransmitterReceiver.dir/PhysicalLayer.cpp.o CMakeFiles/TransmitterReceiver.dir/ApplicationLayer.cpp.o  -o TransmitterReceiver 
