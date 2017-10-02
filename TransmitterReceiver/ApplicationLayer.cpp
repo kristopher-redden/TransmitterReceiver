@@ -32,15 +32,14 @@ void ApplicationLayer::CommandT(string file1, string file2)
         {
             charCount++;
             dataField += character;
-            if (charCount == 8)
+            //Works for extended ASCII.
+            if (charCount == 7)
             {
                 pl.Encode(dataField, file2);
                 dataField = "";
             }
         }
         pl.Encode(dataField, file2);
-
-
     }
     //ofstream ofs(file2, ios::out)
 }
