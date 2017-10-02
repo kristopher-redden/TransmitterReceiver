@@ -3,10 +3,12 @@
 
 CMakeFiles/TransmitterReceiver.dir/ApplicationLayer.cpp.o: ../ApplicationLayer.cpp
 CMakeFiles/TransmitterReceiver.dir/ApplicationLayer.cpp.o: ../ApplicationLayer.h
+CMakeFiles/TransmitterReceiver.dir/ApplicationLayer.cpp.o: ../DataLinkLayer.h
 CMakeFiles/TransmitterReceiver.dir/ApplicationLayer.cpp.o: ../PhysicalLayer.h
 
 CMakeFiles/TransmitterReceiver.dir/DataLinkLayer.cpp.o: ../DataLinkLayer.cpp
 CMakeFiles/TransmitterReceiver.dir/DataLinkLayer.cpp.o: ../DataLinkLayer.h
+CMakeFiles/TransmitterReceiver.dir/DataLinkLayer.cpp.o: ../PhysicalLayer.h
 
 CMakeFiles/TransmitterReceiver.dir/PhysicalLayer.cpp.o: ../PhysicalLayer.cpp
 CMakeFiles/TransmitterReceiver.dir/PhysicalLayer.cpp.o: ../PhysicalLayer.h
