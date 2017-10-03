@@ -29,6 +29,10 @@ DataLinkLayer.h
 /home/kristopher/Documents/GitClone/TransmitterReceiver/DataLinkLayer.h
 PhysicalLayer.h
 /home/kristopher/Documents/GitClone/TransmitterReceiver/PhysicalLayer.h
+iostream
+-
+fstream
+-
 
 /home/kristopher/Documents/GitClone/TransmitterReceiver/DataLinkLayer.h
 string

@@ -12,10 +12,12 @@ class DataLinkLayer
 {
 public:
     void Framing(string dataField, string fileToWriteTo);
-    void Deframing(string frame, string fileToWriteTo);
+    void Deframing(string frame, string fileToWriteTo, int charCount);
+    void Print(string value, string file);
     DataLinkLayer();
     ~DataLinkLayer();
 private:
+    unsigned char syn = '\026';
 
 };
 

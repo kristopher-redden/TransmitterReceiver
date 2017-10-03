@@ -66,12 +66,12 @@ void ApplicationLayer::CommandR(string file1, string file2)
             //Works for ASCII.
             if (charCount == 88) //SYN + CTRL + Data (Max of 8) + SYN = 88 chars
             {
-                dl.Deframing(frame, file2);
+                dl.Deframing(frame, file2, charCount / 8);
                 frame = "";
                 charCount = 0;
             }
         }
-        dl.Deframing(frame, file2);
+        dl.Deframing(frame, file2, charCount / 8);
     }
 }
 
