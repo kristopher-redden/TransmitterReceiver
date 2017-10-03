@@ -64,7 +64,7 @@ void ApplicationLayer::CommandR(string file1, string file2)
             charCount++;
             frame += character;
             //Works for ASCII.
-            if (charCount == 8) //SYN + SYN + CTRL + Data (Max of 8)
+            if (charCount == 88) //SYN + CTRL + Data (Max of 8) + SYN = 88 chars
             {
                 dl.Deframing(frame, file2);
                 frame = "";

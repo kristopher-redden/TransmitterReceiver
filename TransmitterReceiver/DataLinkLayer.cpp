@@ -17,11 +17,13 @@ DataLinkLayer::~DataLinkLayer()
 void DataLinkLayer::Framing(string dataField, string fileToWriteTo)
 {
     string theFrame;
+
     theFrame += '\x16'; //static_cast<char>(22);
-    theFrame += '\x16';
     theFrame += (unsigned char)dataField.length();
-    int dataLeng = (unsigned char)dataField.length();
+    //int dataLeng = (unsigned char)dataField.length();
     theFrame += dataField;
+    theFrame += '\x16';
+
     PhysicalLayer pl;
     pl.Encode(theFrame, fileToWriteTo);
 }

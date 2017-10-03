@@ -12,11 +12,14 @@ class PhysicalLayer
 public:
     void Encode(string dataField, string outputFile);
     void Decode(string frame, string outputFile);
+    void Print(string value, string file);
     PhysicalLayer();
     ~PhysicalLayer();
 
 private:
-
+    int frameCount = 0;
+    int charLocation = 0;
+    unsigned char syn = '\026';
 
 };
 

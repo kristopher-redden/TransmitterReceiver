@@ -16,7 +16,7 @@ PhysicalLayer::~PhysicalLayer()
 }
 void PhysicalLayer::Encode(string dataField, string outputFile)
 {
-    //datafield contains: syn, syn, length, and the data.
+    //datafield contains: syn, ctrl, data and syn.
     //Works for extended ASCII table.
     string dataFieldInBinary;
     for (int i = 0; i < dataField.length(); i++)
@@ -45,60 +45,100 @@ void PhysicalLayer::Encode(string dataField, string outputFile)
         cout << dataFieldInBinary << endl;
     }
 
-    //Now that we have the entire binary number with parity bits included, write these values to a file.
-    ofstream ofs(outputFile, ios::out | ios::app);
-    for (int loc = 0; loc < dataFieldInBinary.length(); loc++)
-    {
-        unsigned char character = (unsigned char) dataFieldInBinary.at(loc);
-        ofs.put(character);
-    }
-
+    Print(dataFieldInBinary, outputFile);
 }
 void PhysicalLayer::Decode(string frame, string outputFile)
 {
-    string theChar;
     int parityValue;
     int onesCount;
+    unsigned char charToCreate;
+    frameCount++;//Keep track of the frame we are in.
     for (int count = 1; count <= frame.length() / 8; count++)
     {
-        //The first bit is 0 since we are only doing ASCII.
-        theChar = "0";
+        //Reset our char that we are creating and the ones count.
+        charToCreate = 0x0;
+        onesCount = 0;
+        charLocation++;//Keep track of the char we are at.
         parityValue = frame.at(count * 8 - 1);//This is the last bit of the char.
-        for (int position = count * 8 - 2; position >= (count - 1) * 8; position--)
+        for (int position = count * 8 - 2, forward = 6; position >= (count - 1) * 8; position--, forward--)
         {
-            char tempCharacter = frame.at(position);
+            unsigned char tempCharacter = frame.at(position);
             if (tempCharacter == 49)
+            {
                 onesCount++;
-            theChar += tempCharacter;
+                charToCreate |= 1 << forward;
+            }
         }
-        //When we find an error..?
+
         int onesModded = onesCount % 2;
+        string message;
         //We had an odd number of 1's.
-        if (parityValue == 0)
+        if (parityValue == 48)
         {
             //This is an error.
             if (onesModded == 0)
             {
-
+                message = "Error in frame: " + frameCount;
+                message += " at char: " + charLocation;
+                Print(message, outputFile);
             }
             else
             {
-                //Good.
+                //Don't print the syn or control characters. Control char is the second byte.
+                if (charToCreate != syn)
+                {
+                    if (charLocation == 2) continue;
+                    message += charToCreate;
+                    Print(message, outputFile);
+                }
             }
         }
-            //We had an even number of 1's.
+        //We had an even number of 1's.
         else
         {
             if (onesModded == 0)
             {
-
+                //Don't print the syn or control characters. Control char is the second byte.
+                if (charToCreate != syn)
+                {
+                    if (charLocation == 2) continue;
+                    message += charToCreate;
+                    Print(message, outputFile);
+                }
             }
             else
             {
-
+                message = "Error in frame: " + frameCount;
+                message += " at char: " + charLocation;
+                Print(message, outputFile);
             }
         }
-
     }
 
+
+
+//    string frameDecoded;
+//    unsigned char bytes[8]; // Make sure this is zeroed
+//    for (int count=1, j=1; count<=frame.length()/8; count++) {
+//        bytes[0] = 0;
+//        for (int pos=count*8-2; pos>=(count-1)*8; pos--, j++) {
+//            //bytes[j] >>= 1;
+//            if (frame[pos] == '1') bytes[j] = 0x01; else bytes[j] = 0x00;//0x80;
+//        }
+//        unsigned char value = *bytes;
+//        frameDecoded += value;
+//    }
+}
+
+void PhysicalLayer::Print(string value, string file)
+{
+    //Now that we have the entire binary number with parity bits included, write these values to a file.
+    ofstream ofs(file, ios::out | ios::app);
+    for (int loc = 0; loc < value.length(); loc++)
+    {
+        unsigned char character = (unsigned char) value.at(loc);
+        ofs.put(character);
+    }
+    ofs.flush();
+    ofs.close();
 }
