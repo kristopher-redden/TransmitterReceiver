@@ -11,7 +11,7 @@ class PhysicalLayer
 {
 public:
     void Encode(string dataField, string outputFile);
-    void Decode(char character);
+    void Decode(string frame, string outputFile);
     PhysicalLayer();
     ~PhysicalLayer();
 

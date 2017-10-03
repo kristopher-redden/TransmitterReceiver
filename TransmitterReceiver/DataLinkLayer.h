@@ -12,7 +12,7 @@ class DataLinkLayer
 {
 public:
     void Framing(string dataField, string fileToWriteTo);
-    string Deframing(string frame);
+    void Deframing(string frame, string fileToWriteTo);
     DataLinkLayer();
     ~DataLinkLayer();
 private:

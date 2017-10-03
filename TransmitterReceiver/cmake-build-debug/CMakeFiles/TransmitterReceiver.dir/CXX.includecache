@@ -39,6 +39,8 @@ PhysicalLayer.h
 /home/kristopher/Documents/GitClone/TransmitterReceiver/PhysicalLayer.h
 iostream
 -
+fstream
+-
 
 /home/kristopher/Documents/GitClone/TransmitterReceiver/PhysicalLayer.h
 string

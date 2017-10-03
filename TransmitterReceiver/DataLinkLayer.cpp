@@ -20,11 +20,14 @@ void DataLinkLayer::Framing(string dataField, string fileToWriteTo)
     theFrame += '\x16'; //static_cast<char>(22);
     theFrame += '\x16';
     theFrame += (unsigned char)dataField.length();
-    //theFrame += reinterpret_cast<unsigned char&>(22);
-    //theFrame += reinterpret_cast<unsigned char&>(22);
-    //theFrame += reinterpret_cast<unsigned char&>(dataField.length());  //Cast ignoring semantics.
-    //theFrame += syn + syn + dfLength;
+    int dataLeng = (unsigned char)dataField.length();
     theFrame += dataField;
     PhysicalLayer pl;
     pl.Encode(theFrame, fileToWriteTo);
+}
+
+void DataLinkLayer::Deframing(string frame, string fileToWriteTo)
+{
+    PhysicalLayer pl;
+    pl.Decode(frame, fileToWriteTo);
 }
