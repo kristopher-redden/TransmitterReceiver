@@ -14,37 +14,77 @@ PhysicalLayer::~PhysicalLayer()
 {
 
 }
-void PhysicalLayer::Encode(string dataField, string outputFile)
+//void PhysicalLayer::Encode(string dataField, string outputFile)
+//{
+//    //datafield contains: syn, ctrl, data and syn.
+//    //Works for extended ASCII table.
+//    string dataFieldInBinary;
+//    for (int i = 0; i < dataField.length(); i++)
+//    {
+//        char tempCharacter = dataField.at(i);
+//        //ASCII of 0 is 0110000
+//        //Stored in a byte: 00110000
+//        //Or with parity to store value.
+//        int parityCount = 0;
+//        int value;
+//        for (int pos = 0; pos < 7; ++pos)//7 times
+//        {
+//            value = (int) (tempCharacter >> pos) & 1;
+//            if (value == 1)
+//                dataFieldInBinary += "1";
+//            else dataFieldInBinary += "0";
+//
+//            if (value == 1)
+//                parityCount++;
+//        }
+//        //Make this odd parity.
+//        if (parityCount % 2 == 0)
+//            dataFieldInBinary += "1";
+//        else
+//            dataFieldInBinary += "0";
+//    }
+//
+//    Print(dataFieldInBinary, outputFile);
+//}
+
+void PhysicalLayer::Encode(unsigned char* frame, string outputFile, int charLength)
 {
     //datafield contains: syn, ctrl, data and syn.
     //Works for extended ASCII table.
-    string dataFieldInBinary;
-    for (int i = 0; i < dataField.length(); i++)
+    ofstream ofs(outputFile, ios::out | ios::app);
+    int frameLength = charLength + 3;
+    for (int loc = 0; loc < frameLength; loc++)
     {
-        char tempCharacter = dataField.at(i);
+        //char tempCharacter = dataField.at(i);
+        unsigned char theChar = frame[loc];
         //ASCII of 0 is 0110000
         //Stored in a byte: 00110000
         //Or with parity to store value.
         int parityCount = 0;
         int value;
+        unsigned char character;
         for (int pos = 0; pos < 7; ++pos)//7 times
         {
-            value = (int) (tempCharacter >> pos) & 1;
+            value = (int) (theChar >> pos) & 1;
             if (value == 1)
-                dataFieldInBinary += "1";
-            else dataFieldInBinary += "0";
+                character = (unsigned char) '\x31';
+            else character = (unsigned char) '\x30';
+
+            ofs.put(character);
 
             if (value == 1)
                 parityCount++;
         }
         //Make this odd parity.
         if (parityCount % 2 == 0)
-            dataFieldInBinary += "1";
+            character = '\x31';
         else
-            dataFieldInBinary += "0";
-    }
+            character = '\x30';
 
-    Print(dataFieldInBinary, outputFile);
+        ofs.put(character);
+    }
+    ofs.flush();
+    ofs.close();
 }
 
 unsigned char* PhysicalLayer::Decode(string fileToRead, int fileLength)

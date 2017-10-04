@@ -10,7 +10,8 @@ using namespace std;
 class PhysicalLayer
 {
 public:
-    void Encode(string dataField, string outputFile);
+    //void Encode(string dataField, string outputFile);
+    void Encode(unsigned char* frame, string outputFile, int charLength);
     unsigned char* Decode(string fileToRead, int fileLength);
     void Print(string value, string file);
     PhysicalLayer();

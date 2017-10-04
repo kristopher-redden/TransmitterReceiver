@@ -16,17 +16,33 @@ DataLinkLayer::~DataLinkLayer()
 
 }
 
-void DataLinkLayer::Framing(string dataField, string fileToWriteTo)
+//void DataLinkLayer::Framing(string dataField, string fileToWriteTo)
+//{
+//    string theFrame;
+//
+//    theFrame += '\x16'; //static_cast<char>(22);
+//    theFrame += (unsigned char)dataField.length();
+//    theFrame += dataField;
+//    theFrame += '\x16';
+//
+//    PhysicalLayer pl;
+//    pl.Encode(theFrame, fileToWriteTo);
+//}
+
+void DataLinkLayer::Framing(unsigned char* dataField, string fileToWriteTo, int charLength)
 {
     string theFrame;
-
-    theFrame += '\x16'; //static_cast<char>(22);
-    theFrame += (unsigned char)dataField.length();
-    theFrame += dataField;
-    theFrame += '\x16';
+    //We know that we have a full frame.
+    dataField[0] = '\x16';
+    dataField[1] = (unsigned char) charLength;
+    if (charLength == 8)
+        dataField[10] = '\x16';
+    //We know that we are at the last frame. If charLength is 1, the last SYN is in location 3.
+    else
+        dataField[charLength + 2] = '\x16';
 
     PhysicalLayer pl;
-    pl.Encode(theFrame, fileToWriteTo);
+    pl.Encode(dataField, fileToWriteTo, charLength);
 }
 
 unsigned char* DataLinkLayer::Deframing(string fileToRead, int fileLength)
