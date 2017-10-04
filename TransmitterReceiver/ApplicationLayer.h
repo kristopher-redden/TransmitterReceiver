@@ -14,9 +14,6 @@ public:
     void CommandT(string file1, string file2);
     void CommandR(string file1, string file2);
     void CommandTWithError(string file1, string file2);
-    void CommandTAndR(string file1, string file2, string file3);
-    void CommandTRAndError(string file1, string file2);
-
     ApplicationLayer();
     ~ApplicationLayer();
 

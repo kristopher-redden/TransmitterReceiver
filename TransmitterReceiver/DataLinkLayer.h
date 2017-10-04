@@ -12,7 +12,6 @@ class DataLinkLayer
 {
 public:
     void Framing(string dataField, string fileToWriteTo);
-    //void Deframing(string frame, string fileToWriteTo, int charCount);
     unsigned char* Deframing(string fileToRead, int fileLength);
     void Print(string value, string file);
     DataLinkLayer();

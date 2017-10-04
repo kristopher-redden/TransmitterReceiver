@@ -47,31 +47,8 @@ int main(int argc, char* argv[]) {
         {
             file1 = argv[2];
             file2 = argv[3];
-        }
-        else
-        {
-            cout << "No files \\ too many \\ too few files specified." << endl;
-        }
-    }
-    else if (command == "-tAndR")
-    {
-        if (argc == 5)
-        {
-            file1 = argv[2];
-            file2 = argv[3];
-            file3 = argv[4];
-        }
-        else
-        {
-            cout << "No files \\ too many \\ too few files specified." << endl;
-        }
-    }
-    else if (command == "trAndError")
-    {
-        if (argc == 4)
-        {
-            file1 = argv[2];
-            file2 = argv[3];
+            ApplicationLayer al;
+            al.CommandTWithError(file1, file2);
         }
         else
         {

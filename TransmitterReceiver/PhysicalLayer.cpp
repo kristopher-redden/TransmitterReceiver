@@ -42,81 +42,10 @@ void PhysicalLayer::Encode(string dataField, string outputFile)
             dataFieldInBinary += "1";
         else
             dataFieldInBinary += "0";
-        //cout << dataFieldInBinary << endl;
     }
 
     Print(dataFieldInBinary, outputFile);
 }
-//unsigned char* PhysicalLayer::Decode(string frame, string outputFile, int charCount)
-//{
-//    int parityValue;
-//    int onesCount;
-//    unsigned char charToCreate;
-//    frameCount++;//Keep track of the frame we are in.
-//    unsigned char *characters = new unsigned char[charCount];
-//
-//    //Grab the data and print them out.
-//    for (int count = 1; count <= frame.length() / 8; count++)
-//    {
-//        //Reset our char that we are creating and the ones count.
-//        charToCreate = 0x0;
-//        onesCount = 0;
-//        charLocation++;//Keep track of the char we are at.
-//        parityValue = frame.at(count * 8 - 1);//This is the last bit of the char.
-//        for (int position = count * 8 - 2, forward = 6; position >= (count - 1) * 8; position--, forward--)
-//        {
-//            unsigned char tempCharacter = frame.at(position);
-//            if (tempCharacter == 49)
-//            {
-//                onesCount++;
-//                charToCreate |= 1 << forward;
-//            }
-//        }
-//
-//        int onesModded = onesCount % 2;
-//        string message;
-//        //We had an odd number of 1's.
-//        if (parityValue == 48)
-//        {
-//            //This is an error.
-//            if (onesModded == 0)
-//            {
-//                message = "Error in frame: " + frameCount;
-//                message += " at char: " + charLocation;
-//                cerr << message;
-//                //We are done, this is a bad frame.
-//                return nullptr;
-//                //Print(message, outputFile);
-//            }
-//            else
-//            {
-//                //message += charToCreate;
-//                characters[charLocation - 1] = charToCreate;
-//                //Print(message, outputFile);
-//            }
-//        }
-//        //We had an even number of 1's.
-//        else
-//        {
-//            if (onesModded == 0)
-//            {
-//                //message += charToCreate;
-//                characters[charLocation - 1] = charToCreate;
-//                //Print(message, outputFile);
-//            }
-//            else
-//            {
-//                message = "Error in frame: " + frameCount;
-//                message += " at char: " + charLocation;
-//                cerr << message;
-//                //We are done, this is a bad frame.
-//                return nullptr;
-//                //Print(message, outputFile);
-//            }
-//        }
-//    }//End of for loop.
-//    return characters;
-//}
 
 unsigned char* PhysicalLayer::Decode(string fileToRead, int fileLength)
 {
@@ -132,7 +61,6 @@ unsigned char* PhysicalLayer::Decode(string fileToRead, int fileLength)
             bytes[loc] = (unsigned char) character;
             loc++;
         }
-        //return bytes;
     }
     else
     {

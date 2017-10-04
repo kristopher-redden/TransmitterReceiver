@@ -47,34 +47,7 @@ void ApplicationLayer::CommandT(string file1, string file2)
         dl.Framing(dataField, file2);
     }
 }
-
 //file1 is the file to read from, file2 is the file to write to.
-//void ApplicationLayer::CommandR(string file1, string file2)
-//{
-//    ofstream ofs(file2, ios::out | ios::trunc);
-//    DataLinkLayer dl;
-//    ifstream ifs(file1, ios::in | ios::binary);
-//    if (ifs.good())
-//    {
-//        char character;
-//        string frame;
-//        int charCount = 0;
-//        while (ifs.get(character))
-//        {
-//            charCount++;
-//            frame += character;
-//            //Works for ASCII.
-//            if (charCount == 88) //SYN + CTRL + Data (Max of 8) + SYN = 88 chars
-//            {
-//                dl.Deframing(frame, file2, charCount / 8);
-//                frame = "";
-//                charCount = 0;
-//            }
-//        }
-//        dl.Deframing(frame, file2, charCount / 8);
-//    }
-//}
-
 void ApplicationLayer::CommandR(string file1, string file2)
 {
     ifstream ifs(file1, ios::in | ios::ate);
@@ -114,18 +87,16 @@ void ApplicationLayer::CommandR(string file1, string file2)
     ofs.close();
 }
 
+//file1 is the file to read from, file2 is the file to write to.
 void ApplicationLayer::CommandTWithError(string file1, string file2)
 {
+    ifstream ifs(file1, ios::in | ios::ate);
+    int fileLength = ifs.tellg();
+    ifs.close();
 
+    int toggleFirstBit = rand() % fileLength;
+    int toggleSecondBit = rand() % fileLength;
+    int toggleThirdBit = rand() % fileLength;
 }
 
-void ApplicationLayer::CommandTAndR(string file1, string file2, string file3)
-{
-
-}
-
-void ApplicationLayer::CommandTRAndError(string file1, string file2)
-{
-
-}
 

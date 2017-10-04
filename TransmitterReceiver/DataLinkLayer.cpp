@@ -22,45 +22,12 @@ void DataLinkLayer::Framing(string dataField, string fileToWriteTo)
 
     theFrame += '\x16'; //static_cast<char>(22);
     theFrame += (unsigned char)dataField.length();
-    //int dataLeng = (unsigned char)dataField.length();
     theFrame += dataField;
     theFrame += '\x16';
 
     PhysicalLayer pl;
     pl.Encode(theFrame, fileToWriteTo);
 }
-
-//void DataLinkLayer::Deframing(string frame, string fileToWriteTo, int charCount)
-//{
-//    PhysicalLayer pl;
-//    unsigned char *bytes;
-//    unsigned char currentChar;
-//    bytes = pl.Decode(frame, fileToWriteTo, charCount);
-//    if (bytes == nullptr)
-//    {
-//        //We are done, don't print anything because the frame contained a parity that failed.
-//    }
-//    else
-//    {
-//        unsigned char firstSYN = bytes[0];
-//        unsigned char lastSYN = bytes[charCount - 1];
-//        unsigned char ctrl = bytes[1];
-//        //We have an invalid frame because we don't have two SYN characters.
-//        if (firstSYN != syn || lastSYN != syn)
-//        {
-//            cerr << "We have an invalid frame.  No SYN characters present";
-//            return;
-//        }
-//        //We have a valid frame, construct the data to print.
-//        string print;
-//        for (int i = 2; i < charCount - 1; i++)
-//        {
-//            currentChar = bytes[i];
-//            print += currentChar;
-//        }
-//        Print(print, fileToWriteTo);
-//    }
-//}
 
 unsigned char* DataLinkLayer::Deframing(string fileToRead, int fileLength)
 {
