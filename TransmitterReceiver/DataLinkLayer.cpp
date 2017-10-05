@@ -16,19 +16,6 @@ DataLinkLayer::~DataLinkLayer()
 
 }
 
-//void DataLinkLayer::Framing(string dataField, string fileToWriteTo)
-//{
-//    string theFrame;
-//
-//    theFrame += '\x16'; //static_cast<char>(22);
-//    theFrame += (unsigned char)dataField.length();
-//    theFrame += dataField;
-//    theFrame += '\x16';
-//
-//    PhysicalLayer pl;
-//    pl.Encode(theFrame, fileToWriteTo);
-//}
-
 void DataLinkLayer::Framing(unsigned char* dataField, string fileToWriteTo, int charLength)
 {
     string theFrame;
@@ -88,7 +75,8 @@ unsigned char* DataLinkLayer::Deframing(string fileToRead, int fileLength)
                 bytesToWriteIndex++;
             }
         }
-        //We have a frame that is not the full length.  We know the previous frame we checked, so go to the next one that doesn't have a full length.
+        //We have a frame that is not the full length.  We know the previous frame we checked,
+        //so go to the next one that doesn't have a full length.
         if (lastFrameLength != 0)
         {
             firstSYN = bytes[(lastFrameChecked + 1) * 11];
@@ -110,17 +98,4 @@ unsigned char* DataLinkLayer::Deframing(string fileToRead, int fileLength)
         return bytesToWriteToFile;
     }
 
-}
-
-void DataLinkLayer::Print(string value, string file)
-{
-    //Now that we have the entire data part of the frame, write these chars to a file.
-    ofstream ofs(file, ios::out | ios::app);
-    for (int loc = 0; loc < value.length(); loc++)
-    {
-        unsigned char character = (unsigned char) value.at(loc);
-        ofs.put(character);
-    }
-    ofs.flush();
-    ofs.close();
 }

@@ -14,38 +14,6 @@ PhysicalLayer::~PhysicalLayer()
 {
 
 }
-//void PhysicalLayer::Encode(string dataField, string outputFile)
-//{
-//    //datafield contains: syn, ctrl, data and syn.
-//    //Works for extended ASCII table.
-//    string dataFieldInBinary;
-//    for (int i = 0; i < dataField.length(); i++)
-//    {
-//        char tempCharacter = dataField.at(i);
-//        //ASCII of 0 is 0110000
-//        //Stored in a byte: 00110000
-//        //Or with parity to store value.
-//        int parityCount = 0;
-//        int value;
-//        for (int pos = 0; pos < 7; ++pos)//7 times
-//        {
-//            value = (int) (tempCharacter >> pos) & 1;
-//            if (value == 1)
-//                dataFieldInBinary += "1";
-//            else dataFieldInBinary += "0";
-//
-//            if (value == 1)
-//                parityCount++;
-//        }
-//        //Make this odd parity.
-//        if (parityCount % 2 == 0)
-//            dataFieldInBinary += "1";
-//        else
-//            dataFieldInBinary += "0";
-//    }
-//
-//    Print(dataFieldInBinary, outputFile);
-//}
 
 void PhysicalLayer::Encode(unsigned char* frame, string outputFile, int charLength)
 {
@@ -142,17 +110,13 @@ unsigned char* PhysicalLayer::Decode(string fileToRead, int fileLength)
                 return nullptr;
             }
             else
-            {
                 characters[charLocation - 1] = charToCreate;
-            }
         }
         //We had an even number of 1's.
         else
         {
             if (onesModded == 0)
-            {
                 characters[charLocation - 1] = charToCreate;
-            }
             else
             {
                 message = "Error at char: " + charLocation;
@@ -163,17 +127,4 @@ unsigned char* PhysicalLayer::Decode(string fileToRead, int fileLength)
         }
     }
     return characters;
-}
-
-void PhysicalLayer::Print(string value, string file)
-{
-    //Now that we have the entire binary number with parity bits included, write these values to a file.
-    ofstream ofs(file, ios::out | ios::app);
-    for (int loc = 0; loc < value.length(); loc++)
-    {
-        unsigned char character = (unsigned char) value.at(loc);
-        ofs.put(character);
-    }
-    ofs.flush();
-    ofs.close();
 }
