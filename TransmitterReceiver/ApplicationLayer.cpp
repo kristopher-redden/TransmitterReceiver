@@ -31,12 +31,11 @@ void ApplicationLayer::CommandT(string file1, string file2)
     ifsLeng.close();
 
     ifstream ifs (file1, ios::in | ios::binary);
-    int fullFrameLength = fileLength / 8;
-    int extraFrameLength = fileLength % 8;
+    int extraFrameLength = fileLength % 64;
     if (ifs.good())
     {
         char character;
-        unsigned char *chars = new unsigned char[11];
+        unsigned char *chars = new unsigned char[67];
         int charCount = 0;
         while (ifs.get(character))
         {
@@ -44,9 +43,9 @@ void ApplicationLayer::CommandT(string file1, string file2)
             chars[charCount + 2] = character;
             charCount++;
             //Works for ASCII.
-            if (charCount == 8)
+            if (charCount == 64)
             {
-                dl.Framing(chars, file2, 8);
+                dl.Framing(chars, file2, 64);
                 charCount = 0;
             }
         }
@@ -76,7 +75,7 @@ void ApplicationLayer::CommandR(string file1, string file2)
     while(charLength > 0)
     {
         tempFileLength = charLength;
-        charLength -= 11;
+        charLength -= 67;
         //In case we don't grab the last non full frame, we need to get the char count of that one.
         if (charLength < 0)
         {
@@ -84,8 +83,8 @@ void ApplicationLayer::CommandR(string file1, string file2)
             printableChars += tempFileLength;
             break;
         }
-        tempFileLength -= 11;
-        printableChars += 8;
+        tempFileLength -= 67;
+        printableChars += 64;
     }
     //Now that we have the entire binary number with parity bits included, write these values to a file.
     ofstream ofs(file2, ios::out | ios::trunc);
