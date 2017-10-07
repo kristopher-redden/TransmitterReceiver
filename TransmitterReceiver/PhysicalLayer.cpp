@@ -15,46 +15,53 @@ PhysicalLayer::~PhysicalLayer()
 
 }
 
+//Convert all of the chars to 1's and 0's.
 void PhysicalLayer::Encode(unsigned char* frame, string outputFile, int charLength)
 {
-    //datafield contains: syn, ctrl, data and syn.
-    //Works for extended ASCII table.
+    //datafield contains: syn, ctrl, data (up to 64 data chars) and syn.
     ofstream ofs(outputFile, ios::out | ios::app);
-    int frameLength = charLength + 3;
-    for (int loc = 0; loc < frameLength; loc++)
+    if (ofs.good()) //Returns true if none of the error flags are set to true.
     {
-        //char tempCharacter = dataField.at(i);
-        unsigned char theChar = frame[loc];
-        //ASCII of 0 is 0110000
-        //Stored in a byte: 00110000
-        //Or with parity to store value.
-        int parityCount = 0;
-        int value;
-        unsigned char character;
-        for (int pos = 0; pos < 7; ++pos)//7 times
+        int frameLength = charLength + 3;
+        for (int loc = 0; loc < frameLength; loc++)
         {
-            value = (int) (theChar >> pos) & 1;
-            if (value == 1)
-                character = (unsigned char) '\x31';
-            else character = (unsigned char) '\x30';
+            unsigned char theChar = frame[loc];
+            //ASCII of 0 is 0110000
+            //Stored in a byte: 00001100
+            //Or with parity to store value.
+            int parityCount = 0;
+            int value;
+            unsigned char character;
+            for (int pos = 0; pos < 7; ++pos)//7 times
+            {
+                //if (theChar & '\x80') throw invalid byte exception.
+                value = (int) (theChar >> pos) & 1;
+                if (value == 1)
+                    character = (unsigned char) '\x31';
+                else character = (unsigned char) '\x30';
+
+                ofs.put(character);
+
+                if (value == 1)
+                    parityCount++;
+            }
+            //Make this odd parity.
+            if (parityCount % 2 == 0)
+                character = '\x31';
+            else
+                character = '\x30';
 
             ofs.put(character);
-
-            if (value == 1)
-                parityCount++;
         }
-        //Make this odd parity.
-        if (parityCount % 2 == 0)
-            character = '\x31';
-        else
-            character = '\x30';
-
-        ofs.put(character);
+        ofs.flush();
+        ofs.close();
     }
-    ofs.flush();
-    ofs.close();
+    else
+        throw 3;
+
 }
 
+//Convert the 1's and 0's to chars.
 unsigned char* PhysicalLayer::Decode(string fileToRead, int fileLength)
 {
     int charLength = fileLength / 8;
@@ -71,9 +78,8 @@ unsigned char* PhysicalLayer::Decode(string fileToRead, int fileLength)
         }
     }
     else
-    {
-        //Cannot open the file, throw and exception.
-    }
+        throw 3;
+
     //Now that we have read in all the 1's and 0's, do the parity check and construct the chars.
     int parityValue;
     int onesCount;
@@ -104,11 +110,8 @@ unsigned char* PhysicalLayer::Decode(string fileToRead, int fileLength)
         {
             //This is an error.
             if (onesModded == 0)
-            {
-                message = "Error at char: " + charLocation;
-                cerr << message;
-                return nullptr;
-            }
+                throw 2;
+
             else
                 characters[charLocation - 1] = charToCreate;
         }
@@ -118,12 +121,8 @@ unsigned char* PhysicalLayer::Decode(string fileToRead, int fileLength)
             if (onesModded == 0)
                 characters[charLocation - 1] = charToCreate;
             else
-            {
-                message = "Error at char: " + charLocation;
-                cerr << message;
-                //We are done, this is a bad frame.
-                return nullptr;
-            }
+                throw 2;
+
         }
     }
     return characters;

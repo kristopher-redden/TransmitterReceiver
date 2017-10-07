@@ -20,7 +20,19 @@ int main(int argc, char* argv[]) {
             file1 = argv[2];
             file2 = argv[3];
             ApplicationLayer al;
-            al.CommandT(file1, file2);
+            try
+            {
+                al.CommandT(file1, file2);
+            }
+            catch(int exception)
+            {
+                string message;
+                if (exception == 3)
+                {
+                    message = "Transmitter: Input file or output file is invalid.";
+                    cerr << message;
+                }
+            }
         }
         else
         {
@@ -34,11 +46,34 @@ int main(int argc, char* argv[]) {
             file1 = argv[2];
             file2 = argv[3];
             ApplicationLayer al;
-            al.CommandR(file1, file2);
+            try
+            {
+                al.CommandR(file1, file2);
+            }
+            catch(int exception)
+            {
+                string message;
+                if (exception == 1)
+                {
+                    cerr << "Receiver: Frame does not have a starting or ending SYN.";
+                    exit(exception);
+                }
+                else if (exception == 2)
+                {
+                    message = "Receiver: Error when checking parity.";
+                    cerr << message;
+                    exit(exception);
+                }
+                else if (exception == 3)
+                {
+                    message = "Receiver: Input file or output file is invalid.";
+                    cerr << message;
+                }
+            }
         }
         else
         {
-            cout << "No files \\ too many \\ too few files specified." << endl;
+            cerr << "No files \\ too many \\ too few files specified." << endl;
         }
     }
     else if (command == "-tWithError")
@@ -47,23 +82,33 @@ int main(int argc, char* argv[]) {
         {
             file1 = argv[2];
             file2 = argv[3];
-            ApplicationLayer al;
-            al.CommandTWithError(file1, file2);
+            try
+            {
+                ApplicationLayer al;
+                al.CommandTWithError(file1, file2);
+            }
+            catch (int exception)
+            {
+                string message;
+                if (exception == 3)
+                {
+                    message = "Transmitter With Error: Input file or output file is invalid.";
+                    cerr << message;
+                }
+                else if (exception == 4)
+                {
+                    message = "Transmitter With Error: File that was written to has no length.";
+                }
+            }
         }
         else
         {
             cout << "No files \\ too many \\ too few files specified." << endl;
         }
     }
-    //(command == "-help")
     else
     {
-        cout << "-transmitter file1 [file2]" << endl;
-        cout << "Encode a file and write it to a new file location." << endl;
-        cout << "File1 is the file to encode." << endl;
-        cout << "File2 is the file to write to." << endl;
+        cerr << "Invalid command." << endl;
     }
-
-    //Help menu, call the application layer to read and write data.
     return 0;
 }
