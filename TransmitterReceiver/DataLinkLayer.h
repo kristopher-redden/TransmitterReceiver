@@ -11,7 +11,7 @@ using namespace std;
 class DataLinkLayer
 {
 public:
-    void Framing(unsigned char *dataField, string fileToWriteTo, int charLength);
+    void Framing(unsigned char *allData, string fileToWriteTo, int allCharsInFrame, int fullFrames, int extraFrameDataLength, int bitToFlip);
     unsigned char* Deframing(string fileToRead, int fileLength);
     DataLinkLayer();
     ~DataLinkLayer();

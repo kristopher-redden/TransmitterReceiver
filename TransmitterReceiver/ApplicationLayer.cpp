@@ -21,7 +21,7 @@ ApplicationLayer::~ApplicationLayer()
 }
 
 //file1 is the file to read from, file2 is the file to write to.
-void ApplicationLayer::CommandT(string file1, string file2)
+void ApplicationLayer::CommandT(string file1, string file2, int bitToFlip)
 {
     //Clear out the file in case it exists, this way we can simply append to it later on.
     ofstream ofs(file2, ios::out | ios::trunc);
@@ -37,27 +37,19 @@ void ApplicationLayer::CommandT(string file1, string file2)
     {
         char character;
         //We will have 67 chars in the frame, get the data for 2 - 65.
-        unsigned char *chars = new unsigned char[67];
+        int fullFrames = fileLength / 64;
+        int extraFrameDataLength = fileLength % 64;
+        int allCharactersInFrame = fullFrames * 67 + extraFrameDataLength + 3;
+        int onlyDataCharacters = fullFrames * 64 + extraFrameDataLength;
+        unsigned char *chars = new unsigned char[onlyDataCharacters];
         int charCount = 0;
         while (ifs.get(character))
         {
             //Location 0 and 1 is SYN and ctrl, location 66 is the other SYN Char.
-            chars[charCount + 2] = character;
+            chars[charCount] = character;
             charCount++;
-            //We've got 64 chars, go to DataLink to place SYN's and ctrl in the correct location.
-            if (charCount == 64)
-            {
-                dl.Framing(chars, file2, 64);
-                charCount = 0;
-            }
         }
-        //Copy the left over chars to a new byte array, which will be the frame that is not full.
-        unsigned char *smallChars = new unsigned char[extraFrameCharLength + 3];
-        for (int smallCount = 0; smallCount < extraFrameCharLength; smallCount++)
-        {
-            smallChars[smallCount + 2] = chars[smallCount + 2];
-        }
-        dl.Framing(smallChars, file2, extraFrameCharLength);
+        dl.Framing(chars, file2, allCharactersInFrame, fullFrames, extraFrameDataLength, bitToFlip);
         ifs.close();
     }
     else
@@ -115,37 +107,23 @@ void ApplicationLayer::CommandR(string file1, string file2)
 //file1 is the file to read from, file2 is the file to write to.
 void ApplicationLayer::CommandTWithError(string file1, string file2)
 {
-    //Generate the file of 1's and 0's.
-    CommandT(file1, file2);
-    //Grab the number of 1's and 0's in the file, and pick a random one to switch.
-    ifstream ifs(file2, ios::in | ios::ate);
-
-    int fileLength = ifs.tellg();
-    if (fileLength == 0)
-        throw 4;
-    char character;
-    srand(time(NULL));
+    ifstream ifs(file1, ios::in | ios::ate);
     if (ifs.good())
     {
-        int bit = rand() % fileLength;
-        ifs.seekg(bit);
-        ifs.get(character);
+        int fileLength = ifs.tellg();
+        int fullFrames = fileLength / 64;
+        int extraFrameDataLength = fileLength % 64;
+        int allCharactersInFrame = fullFrames * 67 + extraFrameDataLength + 3;
+        srand(time(NULL));
         ifs.close();
-        //ofstream ofs(file2, ios::out);
-        //ofs.seekp(bit);
-        fstream ofs(file2, ios::out);
-        ofs.seekp(bit);
-        if (character == 48)
-            ofs.put('\031');//If we have a 0, write a 1.
-        else if (character == 49)
-            ofs.put('\030');
-        else
-        {
-            int weHaveAnError = 0;
-        }
+        //Generate a random number that is between 0 and the fileLength.
+        int bitToFlip = rand() % (allCharactersInFrame * 8);//Each char is made up of 8 1's and 0's.
+        //Generate the file of 1's and 0's.
+        CommandT(file1, file2, bitToFlip);
     }
     else
         throw 3;
+
 }
 
 

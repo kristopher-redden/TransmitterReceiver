@@ -17,19 +17,34 @@ DataLinkLayer::~DataLinkLayer()
 }
 
 //Format the data into frames: SYN + CTRL + Data + SYN
-void DataLinkLayer::Framing(unsigned char* dataField, string fileToWriteTo, int charLength)
+void DataLinkLayer::Framing(unsigned char* allData, string fileToWriteTo, int allCharsInFrame, int fullFrames, int extraFrameDataLength, int bitToFlip)
 {
-    //We know that we have a full frame.
-    dataField[0] = '\x16';
-    dataField[1] = (unsigned char) charLength;
-    if (charLength == 64)
-        dataField[66] = '\x16';
-    //We know that we are at the last frame. If charLength is 1, the last SYN is in location 3.
-    else
-        dataField[charLength + 2] = '\x16';
+    unsigned char *frames = new unsigned char[allCharsInFrame];
+    for (int loc = 0; loc < fullFrames; loc++)
+    {
+        frames[loc * 67] = '\x16';
+        frames[loc * 67 + 1] = (unsigned char) 64;
+        for (int characterLoc = 0; characterLoc < 64; characterLoc++)
+        {
+            //Initially it will be 2 - 65.
+            //Offset by 2 handles the SYN and CTRL.
+            frames[loc * 67 + characterLoc + 2] = allData[loc * 64 + characterLoc];
+        }
+        frames[(loc + 1) * 67 - 1] = '\x16';
+    }
+    //Now that we have taken care of the full frames, do the last smaller frame.
+    frames[fullFrames * 67] = '\x16';
+    frames[fullFrames * 67 + 1] = (unsigned char) extraFrameDataLength;
+
+    for (int charLocation = 0; charLocation < extraFrameDataLength; charLocation++)
+    {
+        //Offset by 2 handles the SYN and CTRL.
+        frames[fullFrames * 67 + charLocation + 2] = allData[fullFrames * 64 + charLocation];
+    }
+    frames[fullFrames * 67 + extraFrameDataLength + 2] = '\x16';
 
     PhysicalLayer pl;
-    pl.Encode(dataField, fileToWriteTo, charLength);
+    pl.Encode(frames, fileToWriteTo, allCharsInFrame, bitToFlip);
 }
 
 //We will call the physical layer to check the parity of all of the characters in the encoded file.
@@ -75,6 +90,10 @@ unsigned char* DataLinkLayer::Deframing(string fileToRead, int fileLength)
     //so go to the next one that doesn't have a full length.
     if (lastFrameLength != 0)
     {
+        //If lastFrameChecked is 0, then we know that we had a file length of less than 64 data characters.
+        //Set the value to -1 so that we can fill in the only frame (which is less than 64 data characters.)
+        if (lastFrameChecked == 0)
+            lastFrameChecked = -1;
         firstSYN = bytes[(lastFrameChecked + 1) * 67];
         lastSYN = bytes[(lastFrameChecked + 1) * 67 + lastFrameLength - 1];
         ctrl = bytes[(lastFrameChecked + 1) * 67 + 1];

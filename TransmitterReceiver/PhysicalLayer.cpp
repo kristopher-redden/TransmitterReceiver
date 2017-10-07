@@ -16,16 +16,16 @@ PhysicalLayer::~PhysicalLayer()
 }
 
 //Convert all of the chars to 1's and 0's.
-void PhysicalLayer::Encode(unsigned char* frame, string outputFile, int charLength)
+void PhysicalLayer::Encode(unsigned char* frames, string outputFile, int allCharsInFrame, int bitToFlip)
 {
     //datafield contains: syn, ctrl, data (up to 64 data chars) and syn.
+    unsigned char* everyFrame = new unsigned char[allCharsInFrame];
     ofstream ofs(outputFile, ios::out | ios::app);
     if (ofs.good()) //Returns true if none of the error flags are set to true.
     {
-        int frameLength = charLength + 3;
-        for (int loc = 0; loc < frameLength; loc++)
+        for (int loc = 0; loc < allCharsInFrame; loc++)
         {
-            unsigned char theChar = frame[loc];
+            unsigned char theChar = frames[loc];
             //ASCII of 0 is 0110000
             //Stored in a byte: 00001100
             //Or with parity to store value.
@@ -35,7 +35,19 @@ void PhysicalLayer::Encode(unsigned char* frame, string outputFile, int charLeng
             for (int pos = 0; pos < 7; ++pos)//7 times
             {
                 //if (theChar & '\x80') throw invalid byte exception.
-                value = (int) (theChar >> pos) & 1;
+
+                if (loc * 8 + pos == bitToFlip)
+                {
+                    //Once we've hit the bit we want to flip, change it from a 0 to a 1 or vice versa.
+                    //This will only run one time.
+                    if (value == 0)
+                        value = 1;
+                    else
+                        value = 0;
+                }
+                else
+                    value = (int) (theChar >> pos) & 1;
+                
                 if (value == 1)
                     character = (unsigned char) '\x31';
                 else character = (unsigned char) '\x30';
@@ -52,13 +64,14 @@ void PhysicalLayer::Encode(unsigned char* frame, string outputFile, int charLeng
                 character = '\x30';
 
             ofs.put(character);
+            //Place the parity bit in the last bit location.
+            //everyFrame[loc * 8 + 7] = character;
         }
-        ofs.flush();
-        ofs.close();
     }
     else
         throw 3;
-
+    ofs.flush();
+    ofs.close();
 }
 
 //Convert the 1's and 0's to chars.

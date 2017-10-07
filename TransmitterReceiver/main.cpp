@@ -22,7 +22,7 @@ int main(int argc, char* argv[]) {
             ApplicationLayer al;
             try
             {
-                al.CommandT(file1, file2);
+                al.CommandT(file1, file2, -1);
             }
             catch(int exception)
             {
