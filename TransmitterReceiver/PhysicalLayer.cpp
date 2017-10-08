@@ -20,6 +20,7 @@ void PhysicalLayer::Encode(unsigned char* frames, string outputFile, int allChar
 {
     //datafield contains: syn, ctrl, data (up to 64 data chars) and syn.
     unsigned char* everyFrame = new unsigned char[allCharsInFrame];
+    int parityToFlip = 0;
     ofstream ofs(outputFile, ios::out | ios::app);
     if (ofs.good()) //Returns true if none of the error flags are set to true.
     {
@@ -35,8 +36,8 @@ void PhysicalLayer::Encode(unsigned char* frames, string outputFile, int allChar
             for (int pos = 0; pos < 7; ++pos)//7 times
             {
                 //if (theChar & '\x80') throw invalid byte exception.
-
-                if (loc * 8 + pos == bitToFlip)
+                value = (int) (theChar >> pos) & 1;
+                if (loc * 8 + (pos + 1) == bitToFlip)
                 {
                     //Once we've hit the bit we want to flip, change it from a 0 to a 1 or vice versa.
                     //This will only run one time.
@@ -45,18 +46,29 @@ void PhysicalLayer::Encode(unsigned char* frames, string outputFile, int allChar
                     else
                         value = 0;
                 }
-                else
-                    value = (int) (theChar >> pos) & 1;
-                
+
                 if (value == 1)
                     character = (unsigned char) '\x31';
                 else character = (unsigned char) '\x30';
 
                 ofs.put(character);
 
-                if (value == 1)
-                    parityCount++;
+                //If we are at the bit we want to flip, then we don't want to correct the parity, otherwise we
+                //will be changing two bits (i.e. the one we want to flip and the parity bit, which won't result in an error.)
+                if (loc * 8 + (pos + 1) != bitToFlip)
+                {
+                    if (value == 1)
+                        parityCount++;
+                }
+
+                parityToFlip = pos + 1;
             }
+            //We've printed the 1's and 0's for the characters, now we have to print the parity.
+            //Check to make sure that the bit to flip is not the parity.
+            //Add 1 to the parityToFlip value because it previously held the last char that was printed.
+            if (loc * 8 + (parityToFlip + 1) == bitToFlip)
+                parityCount++;//If the bit we are flipping is a parity bit, simply add 1.
+
             //Make this odd parity.
             if (parityCount % 2 == 0)
                 character = '\x31';
@@ -64,8 +76,8 @@ void PhysicalLayer::Encode(unsigned char* frames, string outputFile, int allChar
                 character = '\x30';
 
             ofs.put(character);
+
             //Place the parity bit in the last bit location.
-            //everyFrame[loc * 8 + 7] = character;
         }
     }
     else
