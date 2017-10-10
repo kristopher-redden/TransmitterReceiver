@@ -32,6 +32,7 @@ int main(int argc, char* argv[]) {
                     message = "Transmitter: Input file or output file is invalid.";
                     cerr << message;
                 }
+                exit(exception);
             }
         }
         else
@@ -55,20 +56,18 @@ int main(int argc, char* argv[]) {
                 string message;
                 if (exception == 1)
                 {
-                    cerr << "Receiver: Frame does not have a starting or ending SYN.";
-                    exit(exception);
+                    message = "Receiver: Frame does not have a starting or ending SYN.";
                 }
                 else if (exception == 2)
                 {
                     message = "Receiver: Error when checking parity.";
-                    cerr << message;
-                    exit(exception);
                 }
                 else if (exception == 3)
                 {
                     message = "Receiver: Input file or output file is invalid.";
-                    cerr << message;
                 }
+                cerr << message;
+                exit(exception);
             }
         }
         else
@@ -76,7 +75,7 @@ int main(int argc, char* argv[]) {
             cerr << "No files \\ too many \\ too few files specified." << endl;
         }
     }
-    else if (command == "-tWithError")
+    else if (command == "-et")
     {
         if (argc == 4)
         {
@@ -93,12 +92,13 @@ int main(int argc, char* argv[]) {
                 if (exception == 3)
                 {
                     message = "Transmitter With Error: Input file or output file is invalid.";
-                    cerr << message;
                 }
                 else if (exception == 4)
                 {
                     message = "Transmitter With Error: File that was written to has no length.";
                 }
+                cerr << message;
+                exit(exception);
             }
         }
         else
