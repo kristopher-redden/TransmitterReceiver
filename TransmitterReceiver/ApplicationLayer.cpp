@@ -3,7 +3,6 @@
 //
 
 #include "ApplicationLayer.h"
-#include "PhysicalLayer.h"
 #include "DataLinkLayer.h"
 
 #include <iostream>
@@ -62,7 +61,8 @@ void ApplicationLayer::CommandR(string file1, string file2)
     ifstream ifs(file1, ios::in | ios::ate);
     int fileLength = ifs.tellg();
     ifs.close();
-
+    if (fileLength == -1)
+        throw 3;
     DataLinkLayer dl;
     unsigned char *values;
     values = dl.Deframing(file1, fileLength);

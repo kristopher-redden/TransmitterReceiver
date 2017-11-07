@@ -9,8 +9,6 @@
 /home/kristopher/Documents/GitClone/TransmitterReceiver/ApplicationLayer.cpp
 ApplicationLayer.h
 /home/kristopher/Documents/GitClone/TransmitterReceiver/ApplicationLayer.h
-PhysicalLayer.h
-/home/kristopher/Documents/GitClone/TransmitterReceiver/PhysicalLayer.h
 DataLinkLayer.h
 /home/kristopher/Documents/GitClone/TransmitterReceiver/DataLinkLayer.h
 iostream

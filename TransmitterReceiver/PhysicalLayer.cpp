@@ -19,7 +19,6 @@ PhysicalLayer::~PhysicalLayer()
 void PhysicalLayer::Encode(unsigned char* frames, string outputFile, int allCharsInFrame, int bitToFlip)
 {
     //datafield contains: syn, ctrl, data (up to 64 data chars) and syn.
-    unsigned char* everyFrame = new unsigned char[allCharsInFrame];
     int parityToFlip = 0;
     ofstream ofs(outputFile, ios::out | ios::app);
     if (ofs.good()) //Returns true if none of the error flags are set to true.
