@@ -20,7 +20,7 @@ ApplicationLayer::~ApplicationLayer()
 }
 
 //file1 is the file to read from, file2 is the file to write to.
-void ApplicationLayer::CommandT(string file1, string file2, int bitToFlip)
+void ApplicationLayer::CommandT(string file1, string file2, int bitToFlip, bool ham, bool clientTransmitting)
 {
     //Clear out the file in case it exists, this way we can simply append to it later on.
     ofstream ofs(file2, ios::out | ios::trunc);
@@ -35,11 +35,11 @@ void ApplicationLayer::CommandT(string file1, string file2, int bitToFlip)
     if (ifs.good())
     {
         char character;
-        //We will have 67 chars in the frame, get the data for 2 - 65.
-        int fullFrames = fileLength / 64;
-        int extraFrameDataLength = fileLength % 64;
-        int allCharactersInFrame = fullFrames * 67 + extraFrameDataLength + 3;
-        int onlyDataCharacters = fullFrames * 64 + extraFrameDataLength;
+        //We will have 131 chars in the frame, get the data for 2 - 130.
+        int fullFrames = fileLength / 128;
+        int extraFrameDataLength = fileLength % 128;
+        int allCharactersInFrame = fullFrames * 131 + extraFrameDataLength + 3;
+        int onlyDataCharacters = fullFrames * 128 + extraFrameDataLength;
         unsigned char *chars = new unsigned char[onlyDataCharacters];
         int charCount = 0;
         while (ifs.get(character))
@@ -48,7 +48,9 @@ void ApplicationLayer::CommandT(string file1, string file2, int bitToFlip)
             chars[charCount] = character;
             charCount++;
         }
-        dl.Framing(chars, file2, allCharactersInFrame, fullFrames, extraFrameDataLength, bitToFlip);
+
+        dl.Framing(chars, file2, allCharactersInFrame, fullFrames, extraFrameDataLength, bitToFlip, ham, clientTransmitting);
+
         ifs.close();
     }
     else
@@ -56,7 +58,7 @@ void ApplicationLayer::CommandT(string file1, string file2, int bitToFlip)
 }
 
 //file1 is the file to read from, file2 is the file to write to.
-void ApplicationLayer::CommandR(string file1, string file2)
+void ApplicationLayer::CommandR(string file1, string file2, bool ham, bool clientTransmitting)
 {
     ifstream ifs(file1, ios::in | ios::ate);
     int fileLength = ifs.tellg();
@@ -65,7 +67,7 @@ void ApplicationLayer::CommandR(string file1, string file2)
         throw 3;
     DataLinkLayer dl;
     unsigned char *values;
-    values = dl.Deframing(file1, fileLength);
+    values = dl.Deframing(file1, fileLength, ham, clientTransmitting);
     //Grab the number of chars that will make up the decoded file.
 
     int charLength = fileLength / 8;
@@ -123,7 +125,18 @@ void ApplicationLayer::CommandTWithError(string file1, string file2)
     }
     else
         throw 3;
-
 }
+
+void ApplicationLayer::CommandTHam(string file1, string file2, bool ham, bool clientTransmitting)
+{
+    CommandT(file1, file2, -1, ham, clientTransmitting);
+}
+
+void ApplicationLayer::CommandRHam(string file1, string file2, bool ham, bool clientTransmitting)
+{
+    CommandR(file1, file2, true, false);
+}
+
+
 
 

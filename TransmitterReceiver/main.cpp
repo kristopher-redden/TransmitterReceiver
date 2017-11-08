@@ -22,7 +22,7 @@ int main(int argc, char* argv[]) {
             ApplicationLayer al;
             try
             {
-                al.CommandT(file1, file2, -1);
+                //al.CommandT(file1, file2, -1);
             }
             catch(int exception)
             {
@@ -49,7 +49,7 @@ int main(int argc, char* argv[]) {
             ApplicationLayer al;
             try
             {
-                al.CommandR(file1, file2);
+                //al.CommandR(file1, file2);
             }
             catch(int exception)
             {
@@ -84,7 +84,7 @@ int main(int argc, char* argv[]) {
             try
             {
                 ApplicationLayer al;
-                al.CommandTWithError(file1, file2);
+                //al.CommandTWithError(file1, file2);
             }
             catch (int exception)
             {
@@ -105,6 +105,62 @@ int main(int argc, char* argv[]) {
         {
             cout << "No files \\ too many \\ too few files specified." << endl;
         }
+    }
+    else if (command == "-th")
+    {
+        file1 = argv[2];
+        file2 = argv[3];
+        try
+        {
+            ApplicationLayer al;
+            al.CommandTHam(file1, file2, true, true);
+        }
+        catch (int exception)
+        {
+            string message;
+            if (exception == 3)
+            {
+                message = "Transmitter With Error: Input file or output file is invalid.";
+            }
+            else if (exception == 4)
+            {
+                message = "Transmitter With Error: File that was written to has no length.";
+            }
+            cerr << message;
+            exit(exception);
+        }
+    }
+    else if (command == "-tcrc")
+    {
+
+    }
+    else if (command == "-rh")
+    {
+        file1 = argv[2];
+        file2 = argv[3];
+        try
+        {
+            ApplicationLayer al;
+            al.CommandRHam(file1, file2, true, false);
+        }
+        catch (int exception)
+        {
+            string message;
+            if (exception == 3)
+            {
+                message = "Transmitter With Error: Input file or output file is invalid.";
+            }
+            else if (exception == 4)
+            {
+                message = "Transmitter With Error: File that was written to has no length.";
+            }
+            cerr << message;
+            exit(exception);
+        }
+    }
+    else if (command == "-rcrc")
+    {
+
     }
     else
     {

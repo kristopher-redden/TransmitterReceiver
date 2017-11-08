@@ -11,12 +11,15 @@ using namespace std;
 class DataLinkLayer
 {
 public:
-    void Framing(unsigned char *allData, string fileToWriteTo, int allCharsInFrame, int fullFrames, int extraFrameDataLength, int bitToFlip);
-    unsigned char* Deframing(string fileToRead, int fileLength);
+    void Framing(unsigned char *allData, string fileToWriteTo, int allCharsInFrame, int fullFrames, int extraFrameDataLength, int bitToFlip, bool hamming, bool clientTransmitting);
+    unsigned char* Deframing(string fileToRead, int fileLength, bool hamming, bool clientTransmitter);
+    void Hamming(unsigned char *allData, string fileToWriteTo, int allCharsInFrame, int fullFrames, int extraFrameDataLength, int bitToFlip, bool clientTransmitting);
+    void CRC();
     DataLinkLayer();
     ~DataLinkLayer();
 private:
     unsigned char syn = '\026';
+    uint16_t *HammingValues;
 
 };
 

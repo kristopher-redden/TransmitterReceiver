@@ -11,9 +11,11 @@ using namespace std;
 class ApplicationLayer
 {
 public:
-    void CommandT(string file1, string file2, int bitToFlip);
-    void CommandR(string file1, string file2);
+    void CommandT(string file1, string file2, int bitToFlip, bool NOTNeeded, bool NotNeeded2);
+    void CommandR(string file1, string file2, bool ham, bool clientTransmitting);
     void CommandTWithError(string file1, string file2);
+    void CommandTHam(string file1, string file2, bool ham, bool clientTransmitting);
+    void CommandRHam(string file1, string file2, bool ham, bool clientTransmitting);
     ApplicationLayer();
     ~ApplicationLayer();
 
