@@ -6,21 +6,11 @@
 #include <iostream>
 #include <fstream>
 
+void ReadValues();
+
 PhysicalLayer::PhysicalLayer()
 {
 
-}
-
-void sigchld_handler(int s)
-{
-    // waitpid() might overwrite errno, so we save and restore it:
-    int saved_errno = errno;//errno holds the error code from the last system call
-
-    //Keeps checking for a process -1 if no processes, 0 if unterminated child exists.
-    //Wait until process is killed.
-    while(waitpid(-1, NULL, WNOHANG) > 0);
-
-    errno = saved_errno;
 }
 
 void *get_in_addr(struct sockaddr *sa)
@@ -91,24 +81,19 @@ PhysicalLayer::PhysicalLayer(bool clientTrans, string hostname)
 
         freeaddrinfo(servinfo); // all done with this structure
     }
-    else
-    {
-        //Main
-        int sockfd, new_fd;  // listen on sock_fd, new connection on new_fd
+    else {
+        //Server
         char buf[MAXDATASIZE + 1];//Add 1 since the last char must be a null char.
 
         struct addrinfo hints;
         struct addrinfo *servinfo;
         struct addrinfo *p;
 
-        struct sockaddr_storage their_addr; // connector's address information
-        socklen_t sin_size;
 
         //Reaps zombie process that appear as the fork();  If you make zombies and don't reap them,
         //your system administrator will become agitated.
         struct sigaction sa;
-        int yes=1;
-        char s[INET6_ADDRSTRLEN];  //Create a char array of size 46. https://stackoverflow.com/questions/39443413/why-is-inet6-addrstrlen-defined-as-46-in-c
+        int yes = 1;
         int rv;
 
 
@@ -130,7 +115,7 @@ PhysicalLayer::PhysicalLayer(bool clientTrans, string hostname)
 
         // loop through all the results and bind to the first we can
         //Grab the first socket that is available.
-        for(p = servinfo; p != NULL; p = p->ai_next) {
+        for (p = servinfo; p != NULL; p = p->ai_next) {
             //Create a socket, set it to sockfd, if we can't assign to that location
             //we get -1 back.
 
@@ -161,71 +146,85 @@ PhysicalLayer::PhysicalLayer(bool clientTrans, string hostname)
         freeaddrinfo(servinfo); // all done with this structure
 
         //p is the serverinfo.
-        if (p == NULL)  {
+        if (p == NULL) {
             fprintf(stderr, "server: failed to bind\n");
             exit(1);
         }
 
-        //Tell socket to listen for incoming for incoming connections.
+        //Tell socket to listen for incoming for incoming connections. sockfd.listen() think of it that way.
         if (listen(sockfd, BACKLOG) == -1) {
             perror("listen");
             exit(1);
         }
 
-        sa.sa_handler = sigchld_handler; // reap all dead processes
-        /* Clear all signals from SET.  */
-        sigemptyset(&sa.sa_mask);
-        sa.sa_flags = SA_RESTART;
-        /* Get and/or set the action for signal SIG.  */
-        if (sigaction(SIGCHLD, &sa, NULL) == -1) {
-            perror("sigaction");
-            exit(1);
-        }
-
         printf("server: waiting for connections...\n");
-
-        int exitCount = 0;
-        while(1) {  // main accept() loop
-            sin_size = sizeof their_addr;
-
-            new_fd = accept(sockfd, (struct sockaddr *)&their_addr, &sin_size);
-            if (new_fd == -1) {
-                perror("accept");
-                continue;
-            }
-
-            inet_ntop(their_addr.ss_family,
-                      get_in_addr((struct sockaddr *)&their_addr),
-                      s, sizeof s);
-            printf("server: got connection from %s\n", s);
-
-            int read_size;
-            //Receive a message from client
-            while( (read_size = recv(new_fd , buf , MAXDATASIZE + 1 , 0)) > 0 )
-            {
-                buf[read_size] = '\0'; //Clear last character of buf
-                //printf(buf);
-                std::wcout << buf << std::endl;
-                //Send the message back to client
-                //write(sockfd , buf , strlen(buf));
-            }
-
-            if(read_size == 0)
-            {
-                puts("Client disconnected");
-                fflush(stdout);
-            }
-            else if(read_size == -1)
-            {
-                perror("recv failed");
-            }
-        }
-
     }
 }
 PhysicalLayer::~PhysicalLayer()
 {
 
+}
+
+void PhysicalLayer::WaitForConnection()
+{
+    char s[INET6_ADDRSTRLEN];  //Create a char array of size 46. https://stackoverflow.com/questions/39443413/why-is-inet6-addrstrlen-defined-as-46-in-c
+
+    struct sockaddr_storage their_addr; // connector's address information
+    socklen_t sin_size;
+    sin_size = sizeof their_addr;
+    new_fd = accept(sockfd, (struct sockaddr *)&their_addr, &sin_size);
+    if (new_fd == -1) {
+        perror("accept");
+    }
+
+    inet_ntop(their_addr.ss_family,
+              get_in_addr((struct sockaddr *)&their_addr),
+              s, sizeof s);
+    printf("server: got connection from %s\n", s);
+
+    //We are set up and listening in on the client.
+}
+
+void PhysicalLayer::ReadValues()
+{
+    WaitForConnection();//Call one time.
+    int read_size;
+    //Receive a message from client
+    while( (read_size = recv(new_fd , buf , MAXDATASIZE + 1 , 0)) > 0 )
+    {
+        buf[read_size] = '\0'; //Clear last character of buf
+        wcout << buf << endl;
+        this->entireEncodedFile += buf[read_size];
+        //Instead of printing to the console, print to a file.
+
+//                ofstream ofs("/home/kristopher/Documents/TestTextFile/ZeroToNineReceivedM2.txt", ios::out | ios::trunc);
+//                if (ofs.good())
+//                {
+//                    unsigned char character;
+//                    for (int charCount = 0; charCount < read_size; charCount++)
+//                    {
+//                        character = buf[charCount];
+//                        ofs.put(character);
+//                    }
+//                    ofs.flush();
+//                    ofs.close();
+//                }
+
+        //Send the message back to client
+        //write(sockfd , buf , strlen(buf));
+    }
+
+    //Return to the data link layer with all of the encoded data before exiting the program.
+    //return entireEncodedFile;
+    if(read_size == 0)
+    {
+        puts("Client disconnected");
+        fflush(stdout);
+    }
+    else if(read_size == -1)
+    {
+        perror("recv failed");
+    }
 }
 
 //Convert all of the chars to 1's and 0's.
@@ -401,6 +400,7 @@ unsigned char* PhysicalLayer::Decode(string fileToRead, int fileLength)
     }
     return characters;
 }
+
 
 // get sockaddr, IPv4 or IPv6:
 //The kernel supplies this value.  You can get IPV4 or IPV6.

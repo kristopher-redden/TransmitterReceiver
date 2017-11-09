@@ -29,7 +29,7 @@
 
 ///////////////////////
 
-#define PORT "3496" // the port client will be connecting to
+#define PORT "3498" // the port client will be connecting to
 
 #define MAXDATASIZE 1048 // max number of bytes we can get at once. Frame is 131 bytes * 8 bytes to represent each bit in the byte.
 
@@ -46,6 +46,9 @@ class PhysicalLayer
 public:
     void Encode(unsigned char* frame, string outputFile, int allCharsInFrame, int bitToFlip);
     unsigned char* Decode(string fileToRead, int fileLength);
+    void WaitForConnection();
+    void ReadValues();
+    string entireEncodedFile = "";
     PhysicalLayer();
     PhysicalLayer(bool clientTrans, string hostname);
     ~PhysicalLayer();
@@ -54,6 +57,7 @@ private:
     int charLocation = 0;
     unsigned char syn = '\026';
     int sockfd;
+    int new_fd;  // listen on sock_fd, new connection on new_fd
 
 };
 

@@ -134,6 +134,7 @@ unsigned char* DataLinkLayer::Deframing(string fileToRead, int fileLength, bool 
     PhysicalLayer *pl = new PhysicalLayer(clientTransmitter, "Hostname");
     unsigned char *bytes;
     unsigned char currentChar;
+    pl->ReadValues();
     bytes = pl->Decode(fileToRead, fileLength);
 
     int fullFrameCount = fileLength / 536;
@@ -238,6 +239,7 @@ void DataLinkLayer::Hamming(unsigned char *allData, string fileToWriteTo, int al
     frames[fullFrames * 131 + extraFrameLength - 1] = '\x16';
 
     PhysicalLayer *pl = new PhysicalLayer(clientTransmitting, "hostname");
+
     pl->Encode(frames, fileToWriteTo, allCharsInEveryFrame, bitToFlip);
 }
 
