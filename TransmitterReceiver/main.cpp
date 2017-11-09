@@ -108,8 +108,8 @@ int main(int argc, char* argv[]) {
     }
     else if (command == "-th")
     {
-        file1 = argv[2];
-        file2 = argv[3];
+        file1 = "Hello";//argv[2];
+        file2 = "HelloAgain";//argv[3];
         try
         {
             ApplicationLayer al;
@@ -136,8 +136,8 @@ int main(int argc, char* argv[]) {
     }
     else if (command == "-rh")
     {
-        file1 = argv[2];
-        file2 = argv[3];
+        file1 = "Hello";//argv[2];
+        file2 = "HelloAgain";//argv[3];
         try
         {
             ApplicationLayer al;

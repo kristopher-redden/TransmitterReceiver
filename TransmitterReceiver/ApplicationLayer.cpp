@@ -22,8 +22,9 @@ ApplicationLayer::~ApplicationLayer()
 //file1 is the file to read from, file2 is the file to write to.
 void ApplicationLayer::CommandT(string file1, string file2, int bitToFlip, bool ham, bool clientTransmitting)
 {
+    file1 = "/home/kristopher/Documents/TestTextFile/ZeroToNine.txt";
     //Clear out the file in case it exists, this way we can simply append to it later on.
-    ofstream ofs(file2, ios::out | ios::trunc);
+    //ofstream ofs(file2, ios::out | ios::trunc);
     DataLinkLayer dl;
     ifstream ifsLeng(file1, ios::in | ios::ate);
     int fileLength = ifsLeng.tellg();
@@ -36,10 +37,10 @@ void ApplicationLayer::CommandT(string file1, string file2, int bitToFlip, bool 
     {
         char character;
         //We will have 131 chars in the frame, get the data for 2 - 130.
-        int fullFrames = fileLength / 128;
-        int extraFrameDataLength = fileLength % 128;
-        int allCharactersInFrame = fullFrames * 131 + extraFrameDataLength + 3;
-        int onlyDataCharacters = fullFrames * 128 + extraFrameDataLength;
+        int fullFrames = fileLength / 64;
+        int extraFrameDataLength = fileLength % 64;
+        int allCharactersInFrame = fullFrames * 67 + extraFrameDataLength + 3;
+        int onlyDataCharacters = fullFrames * 64 + extraFrameDataLength;
         unsigned char *chars = new unsigned char[onlyDataCharacters];
         int charCount = 0;
         while (ifs.get(character))
@@ -60,11 +61,11 @@ void ApplicationLayer::CommandT(string file1, string file2, int bitToFlip, bool 
 //file1 is the file to read from, file2 is the file to write to.
 void ApplicationLayer::CommandR(string file1, string file2, bool ham, bool clientTransmitting)
 {
-    ifstream ifs(file1, ios::in | ios::ate);
-    int fileLength = ifs.tellg();
-    ifs.close();
-    if (fileLength == -1)
-        throw 3;
+    //ifstream ifs(file1, ios::in | ios::ate);
+    int fileLength = 100;//ifs.tellg();
+    //ifs.close();
+    //if (fileLength == -1)
+        //throw 3;
     DataLinkLayer dl;
     unsigned char *values;
     values = dl.Deframing(file1, fileLength, ham, clientTransmitting);
@@ -121,7 +122,7 @@ void ApplicationLayer::CommandTWithError(string file1, string file2)
         //Generate a random number that is between 0 and the fileLength.
         int bitToFlip = rand() % (allCharactersInFrame * 8);//Each char is made up of 8 1's and 0's.
         //Generate the file of 1's and 0's.
-        CommandT(file1, file2, bitToFlip);
+        //CommandT(file1, file2, bitToFlip);
     }
     else
         throw 3;

@@ -14,7 +14,9 @@ DataLinkLayer::DataLinkLayer()
     uint16_t hamming = 0x0;
     HammingValues = new uint16_t[128];
     for (uint8_t theChar = 0; theChar < 128; theChar++)
-    {                                   //0  1  2  3  4  5  6  7  8  9 10 11 12 13  14  15
+    {
+        low = high = hamming = 0x0;
+        int x = 0;//0  1  2  3  4  5  6  7  8  9 10 11 12 13  14  15
         //Hamming message is of the form p1 c1 c2 m1 c4 m2 m3 m4 p2 c8 m5 m6 m7 m8 pad1 pad2
         //Fill the higher byte first, which is 0  1  2  3  4  5  6  7
                                              //p1 c1 c2 m1 c4 m2 m3 m4
@@ -28,7 +30,7 @@ DataLinkLayer::DataLinkLayer()
         //Mes =      1                2          3                4                5
         //Ham =      3                5          4                9                11
         //Check bit 1 checks 3, 5, 7, 9, 11 of hamming.                                                                         0100 0000
-        high = (((!((theChar >> 1) ^ theChar ^ (theChar << 2) ^ (theChar << 3) ^ (theChar << 5))) & 0x40) | high);
+        high = (uint8_t )(((~((theChar >> 1) ^ theChar ^ (theChar << 2) ^ (theChar << 3) ^ (theChar << 5))) & 0x40) | high);
 
         //H = 48 = 0  1  0  0  1  0  0  0
         //Message= 1  2  3  4  5  6  7  8
@@ -39,10 +41,10 @@ DataLinkLayer::DataLinkLayer()
         //Mes =      1                3          4                6                7
         //Ham =      3                6          7                10               11
         //Check bit 2 checks 3, 6, 7, 10, 11                                                                       0010 0000
-        high = (((!((theChar >> 2) ^ theChar ^ (theChar << 1) ^ (theChar << 3) ^ (theChar << 4))) & 0x20) | high);
+        high = (uint8_t )(((~((theChar >> 2) ^ theChar ^ (theChar << 1) ^ (theChar << 3) ^ (theChar << 4))) & 0x20) | high);
 
         //Message bit 1 goes into the location 4 of hamming.
-        high = (((theChar >> 3) & 0x10) | high);
+        high = (uint8_t )(((theChar >> 3) & 0x10) | high);
 
         //H = 48 = 0  1  0  0  1  0  0  0
         //Message= 1  2  3  4  5  6  7  8
@@ -53,10 +55,10 @@ DataLinkLayer::DataLinkLayer()
         //Mes =      2                3                 4                8
         //Ham =      5                6                 7                12
         //Check bit 3 checks 5, 6, 7, 12                                                 1000
-        high = (((!((theChar >> 3) ^ (theChar >> 2) ^ (theChar >> 1) ^ (theChar << 3))) & 0x8) | high);
+        high = (uint8_t )(((~((theChar >> 3) ^ (theChar >> 2) ^ (theChar >> 1) ^ (theChar << 3))) & 0x8) | high);
 
         //Message bit 2, 3, 4 go in positions 6, 7 and 8 of the hamming message.
-        high = (((theChar >> 4) & 0x07) | high);
+        high = (uint8_t )(((theChar >> 4) & 0x07) | high);
 
                                         //0  1  2  3  4  5  6  7  8  9 10 11 12 13  14  15
         //Hamming message is of the form p1 c1 c2 m1 c4 m2 m3 m4 p2 c8 m5 m6 m7 m8 pad1 pad2
@@ -72,16 +74,16 @@ DataLinkLayer::DataLinkLayer()
         //Mes =      5                6                 7                8
         //Ham =      9                10                11               12
         //Check bit 4 checks 5, 6, 7, 12                                                 0100 0000
-        low = (((!((theChar << 3) ^ (theChar << 4) ^ (theChar << 5) ^ (theChar << 6))) & 0x40) | low);
+        low = (uint8_t )(((~((theChar << 3) ^ (theChar << 4) ^ (theChar << 5) ^ (theChar << 6))) & 0x40) | low);
 
         //Message bit 5, 6, 7, 8 go in positions 3, 4, 5, 6.
-        low = ((theChar << 2) & 0x3c);
+        low = (uint8_t )(((theChar << 2) & 0x3c) | low);
 
         hamming |= high;
-        hamming << 8;
+        hamming <<= 8;
         hamming |= low;
 
-        HammingValues[theChar] = hamming;
+        HammingValues[(int)theChar] = hamming;
     }
 }
 DataLinkLayer::~DataLinkLayer()
@@ -190,7 +192,12 @@ unsigned char* DataLinkLayer::Deframing(string fileToRead, int fileLength, bool 
 
 void DataLinkLayer::Hamming(unsigned char *allData, string fileToWriteTo, int allCharsInFrame, int fullFrames, int extraFrameDataLength, int bitToFlip, bool clientTransmitting)
 {
-    unsigned char *frames = new unsigned char[allCharsInFrame];
+    int fullFrameLength = fullFrames * 131;//Every full frame has 131 chars. SYN + CTRL + 128 Data chars + SYN
+    int extraFrameLength = extraFrameDataLength * 2 + 3;//The extraFrameDataLength is the data length of the extra frame.
+    int allCharsInEveryFrame = fullFrameLength + extraFrameLength;
+    //Multiple it by 2 so that each data character is made up of 2 hamming chars above and add 3 for SYN + CTRL + SYN.
+    //unsigned char *frames = new unsigned char[allCharsInFrame];
+    unsigned char *frames = new unsigned char[allCharsInEveryFrame];
     //Frame length is SYN + CTRL + 64 Data chars from the file + SYN
     //64 * 2 chars to represent + 3 = 131.
     for (int loc = 0; loc < fullFrames; loc++)
@@ -204,8 +211,8 @@ void DataLinkLayer::Hamming(unsigned char *allData, string fileToWriteTo, int al
             //Get the char from the input file.
             unsigned char theChar = allData[loc * 128 + characterLoc];
             uint16_t  twoChars = HammingValues[theChar];
-            unsigned char high = (unsigned char) twoChars & 0x0F;
-            unsigned char low = (unsigned char) ((twoChars >> 8) & 0x0F);
+            unsigned char low = (unsigned char) twoChars & 0xff;
+            unsigned char high = (unsigned char) ((twoChars >> 8) & 0xff);
 
             frames[(loc * 131) + (characterLoc * 2) + 2] = high;
             frames[(loc * 131) + (characterLoc * 2 + 1) + 2] = low;
@@ -219,12 +226,19 @@ void DataLinkLayer::Hamming(unsigned char *allData, string fileToWriteTo, int al
     for (int charLocation = 0; charLocation < extraFrameDataLength; charLocation++)
     {
         //Offset by 2 handles the SYN and CTRL.
-        frames[fullFrames * 131 + charLocation + 2] = allData[fullFrames * 128 + charLocation];
+        //frames[fullFrames * 131 + charLocation + 2] = allData[fullFrames * 128 + charLocation];
+        unsigned char theChar = allData[fullFrames * 128 + charLocation];
+        uint16_t  twoChars = HammingValues[theChar];
+        unsigned char low = (unsigned char) twoChars & 0xff;
+        unsigned char high = (unsigned char) ((twoChars >> 8) & 0xff);
+
+        frames[(fullFrames * 131) + (charLocation * 2) + 2] = high;
+        frames[(fullFrames * 131) + (charLocation * 2 + 1) + 2] = low;
     }
-    frames[fullFrames * 131 + extraFrameDataLength + 2] = '\x16';
+    frames[fullFrames * 131 + extraFrameLength - 1] = '\x16';
 
     PhysicalLayer *pl = new PhysicalLayer(clientTransmitting, "hostname");
-    pl->Encode(frames, fileToWriteTo, allCharsInFrame, bitToFlip);
+    pl->Encode(frames, fileToWriteTo, allCharsInEveryFrame, bitToFlip);
 }
 
 void DataLinkLayer::CRC()

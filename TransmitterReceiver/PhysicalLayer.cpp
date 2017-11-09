@@ -11,6 +11,28 @@ PhysicalLayer::PhysicalLayer()
 
 }
 
+void sigchld_handler(int s)
+{
+    // waitpid() might overwrite errno, so we save and restore it:
+    int saved_errno = errno;//errno holds the error code from the last system call
+
+    //Keeps checking for a process -1 if no processes, 0 if unterminated child exists.
+    //Wait until process is killed.
+    while(waitpid(-1, NULL, WNOHANG) > 0);
+
+    errno = saved_errno;
+}
+
+void *get_in_addr(struct sockaddr *sa)
+{
+    //If AF_INET == IPV4 then we are using protocol IPV4.
+    if (sa->sa_family == AF_INET) {//sa_family: address family, of socket address.  IPV4 or IPV6?
+        return &(((struct sockaddr_in*)sa)->sin_addr);
+    }
+
+    return &(((struct sockaddr_in6*)sa)->sin6_addr);
+}
+
 PhysicalLayer::PhysicalLayer(bool clientTrans, string hostname)
 {
     hostname = "kristopher-VirtualBox";
@@ -179,10 +201,11 @@ PhysicalLayer::PhysicalLayer(bool clientTrans, string hostname)
 
             int read_size;
             //Receive a message from client
-            while( (read_size = recv(new_fd , buf , MAXDATASIZE , 0)) > 0 )
+            while( (read_size = recv(new_fd , buf , MAXDATASIZE + 1 , 0)) > 0 )
             {
                 buf[read_size] = '\0'; //Clear last character of buf
                 //printf(buf);
+                std::wcout << buf << std::endl;
                 //Send the message back to client
                 //write(sockfd , buf , strlen(buf));
             }
@@ -210,87 +233,106 @@ void PhysicalLayer::Encode(unsigned char* frames, string outputFile, int allChar
 {
     //datafield contains: syn, ctrl, data (up to 128 data chars) and syn.
     int parityToFlip = 0;
-    unsigned char *completeTransmissionFrame = new unsigned char [MAXDATASIZE];
+    unsigned char *completeTransmissionFrame = new unsigned char [MAXDATASIZE + 1];
     int locTransFrame = 0;
-        for (int loc = 0; loc < allCharsInFrame; loc++)
+    int keepTrackOfEveryChar = 0;
+    for (int loc = 0; loc < allCharsInFrame; loc++)
+    {
+        keepTrackOfEveryChar++;
+        unsigned char theChar = frames[loc];
+        //ASCII of 0 is 0110000
+        //Stored in a byte: 00001100
+        //Or with parity to store value.
+        int parityCount = 0;
+        int value;
+        unsigned char character;
+        for (int pos = 0; pos < 7; ++pos)//7 times
         {
-            unsigned char theChar = frames[loc];
-            //ASCII of 0 is 0110000
-            //Stored in a byte: 00001100
-            //Or with parity to store value.
-            int parityCount = 0;
-            int value;
-            unsigned char character;
-            for (int pos = 0; pos < 7; ++pos)//7 times
+            //if (theChar & '\x80') throw invalid byte exception.
+            value = (int) (theChar >> pos) & 1;
+            if (loc * 8 + (pos + 1) == bitToFlip)
             {
-                //if (theChar & '\x80') throw invalid byte exception.
-                value = (int) (theChar >> pos) & 1;
-                if (loc * 8 + (pos + 1) == bitToFlip)
-                {
-                    //Once we've hit the bit we want to flip, change it from a 0 to a 1 or vice versa.
-                    //This will only run one time.
-                    if (value == 0)
-                        value = 1;
-                    else
-                        value = 0;
-                }
+                //Once we've hit the bit we want to flip, change it from a 0 to a 1 or vice versa.
+                //This will only run one time.
+                if (value == 0)
+                    value = 1;
+                else
+                    value = 0;
+            }
 
-                if (value == 1)
-                    character = (unsigned char) '\x31';
-                else character = (unsigned char) '\x30';
+            if (value == 1)
+                character = (unsigned char) '\x31';
+            else character = (unsigned char) '\x30';
 
-                //Instead of writing to a file, place data in array until we have 1048 bytes.
-                completeTransmissionFrame[locTransFrame] = character;
-                locTransFrame++;
-
-                //If we are at the bit we want to flip, then we don't want to correct the parity, otherwise we
-                //will be changing two bits (i.e. the one we want to flip and the parity bit, which won't result in an error.)
-                if (loc * 8 + (pos + 1) != bitToFlip)
-                {
-                    if (value == 1)
-                        parityCount++;
-                }
-
-                parityToFlip = pos + 1;
-            }//End of adding parity to one char.
-
-            //We've printed the 1's and 0's for the characters, now we have to print the parity.
-            //Check to make sure that the bit to flip is not the parity.
-            //Add 1 to the parityToFlip value because it previously held the last char that was printed.
-            if (loc * 8 + (parityToFlip + 1) == bitToFlip)
-                parityCount++;//If the bit we are flipping is a parity bit, simply add 1.
-
-            //Make this odd parity.
-            if (parityCount % 2 == 0)
-                character = '\x31';
-            else
-                character = '\x30';
-
-            //We have placed the seven bits of the data char in the frame, now add the parity.
+            //Instead of writing to a file, place data in array until we have 1048 bytes.
             completeTransmissionFrame[locTransFrame] = character;
             locTransFrame++;
 
-            //This will only occur once a parity bit has been placed in the completeTransmissionFrame.
-            if (locTransFrame == MAXDATASIZE)
+            //If we are at the bit we want to flip, then we don't want to correct the parity, otherwise we
+            //will be changing two bits (i.e. the one we want to flip and the parity bit, which won't result in an error.)
+            if (loc * 8 + (pos + 1) != bitToFlip)
             {
-                //We have filled an entire transmission frame, send it.
-
-                unsigned char *charArray = new unsigned char[MAXDATASIZE + 1];
-                charArray[MAXDATASIZE] = '\0';
-
-                int charNum = 0;
-                while(charNum != MAXDATASIZE && (completeTransmissionFrame[charNum] != '\0'))
-                {
-                    charArray[charNum++] = completeTransmissionFrame[charNum];
-                }
-                if (send(sockfd, charArray, charNum, 0) == -1)
-                    perror("Sending failed.");
-
-                //Instead of writing to a file, send data through socket.
+                if (value == 1)
+                    parityCount++;
             }
+
+            parityToFlip = pos + 1;
+        }//End of adding parity to one char.
+
+        //We've printed the 1's and 0's for the characters, now we have to print the parity.
+        //Check to make sure that the bit to flip is not the parity.
+        //Add 1 to the parityToFlip value because it previously held the last char that was printed.
+        if (loc * 8 + (parityToFlip + 1) == bitToFlip)
+            parityCount++;//If the bit we are flipping is a parity bit, simply add 1.
+
+        //Make this odd parity.
+        if (parityCount % 2 == 0)
+            character = '\x31';
+        else
+            character = '\x30';
+
+        //We have placed the seven bits of the data char in the frame, now add the parity.
+        completeTransmissionFrame[locTransFrame] = character;
+        locTransFrame++;
+
+        //This will only occur once a parity bit has been placed in the completeTransmissionFrame.
+        if (locTransFrame == MAXDATASIZE)
+        {
+            //We have filled an entire transmission frame, send it.
+
+            unsigned char *charArray = new unsigned char[MAXDATASIZE + 1];
+            charArray[MAXDATASIZE + 1] = '\0';
+
+            int charNum = 0;
+            while((charNum != (MAXDATASIZE + 1)) && (completeTransmissionFrame[charNum] != '\0'))
+            {
+                charArray[charNum] = completeTransmissionFrame[charNum];
+                charNum++;
+            }
+            if (send(sockfd, charArray, charNum, 0) == -1)
+                perror("Sending failed.");
+
+            //Instead of writing to a file, send data through socket.
         }
-    //Close the socket once all of the transmission have been sent.
-    close(sockfd);
+    }
+    if (keepTrackOfEveryChar == allCharsInFrame && allCharsInFrame)
+    {
+        //We have exited the for loop, now we have to send the partial frame.
+        //We have filled the partial frame transmission frame, send it.
+        unsigned char *charArray = new unsigned char[MAXDATASIZE + 1];
+        charArray[MAXDATASIZE + 1] = '\0';
+
+        int charNum = 0;
+        while((charNum != (MAXDATASIZE + 1)) && (completeTransmissionFrame[charNum] != '\0'))
+        {
+            charArray[charNum] = completeTransmissionFrame[charNum];
+            charNum++;
+        }
+        if (send(sockfd, charArray, charNum, 0) == -1)
+            perror("Sending failed.");
+        //Close the socket once all of the transmission have been sent.
+        close(sockfd);
+    }
 }
 
 //Convert the 1's and 0's to chars.
@@ -364,24 +406,12 @@ unsigned char* PhysicalLayer::Decode(string fileToRead, int fileLength)
 //The kernel supplies this value.  You can get IPV4 or IPV6.
 //IPV4 example: 192.0.2.11
 //IPV6 example: 2001:0db8:c9d2:aee5:73e3:934a:a5ae:9551
-void *PhysicalLayer::get_in_addr(struct sockaddr *sa)
-{
-    //If AF_INET == IPV4 then we are using protocol IPV4.
-    if (sa->sa_family == AF_INET) {//sa_family: address family, of socket address.  IPV4 or IPV6?
-        return &(((struct sockaddr_in*)sa)->sin_addr);
-    }
-
-    return &(((struct sockaddr_in6*)sa)->sin6_addr);
-}
-
-void PhysicalLayer::sigchld_handler(int s)
-{
-    // waitpid() might overwrite errno, so we save and restore it:
-    int saved_errno = errno;//errno holds the error code from the last system call
-
-    //Keeps checking for a process -1 if no processes, 0 if unterminated child exists.
-    //Wait until process is killed.
-    while(waitpid(-1, NULL, WNOHANG) > 0);
-
-    errno = saved_errno;
-}
+//void *PhysicalLayer::get_in_addr(struct sockaddr *sa)
+//{
+//    //If AF_INET == IPV4 then we are using protocol IPV4.
+//    if (sa->sa_family == AF_INET) {//sa_family: address family, of socket address.  IPV4 or IPV6?
+//        return &(((struct sockaddr_in*)sa)->sin_addr);
+//    }
+//
+//    return &(((struct sockaddr_in6*)sa)->sin6_addr);
+//}
