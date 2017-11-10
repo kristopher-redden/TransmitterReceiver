@@ -13,6 +13,8 @@ int main(int argc, char* argv[]) {
     string file2 = "";
     string file3 = "";
 
+    //Let port number be a parameter that you can pass in.
+
     if (command == "-t")
     {
         if (argc == 4)
@@ -108,12 +110,12 @@ int main(int argc, char* argv[]) {
     }
     else if (command == "-th")
     {
-        file1 = "Hello";//argv[2];
-        file2 = "HelloAgain";//argv[3];
+        string hostname = argv[2];
+        string fileToReadFrom = argv[3];
         try
         {
             ApplicationLayer al;
-            al.CommandTHam(file1, file2, true, true);
+            al.CommandTHam(hostname, fileToReadFrom, true, true);
         }
         catch (int exception)
         {
@@ -136,12 +138,12 @@ int main(int argc, char* argv[]) {
     }
     else if (command == "-rh")
     {
-        file1 = "Hello";//argv[2];
-        file2 = "HelloAgain";//argv[3];
+        string hostname = argv[2];
+        string fileToWriteTo = argv[3];
         try
         {
             ApplicationLayer al;
-            al.CommandRHam(file1, file2, true, false);
+            al.CommandRHam(hostname, fileToWriteTo, true, false);
         }
         catch (int exception)
         {

@@ -44,16 +44,17 @@ using namespace std;
 class PhysicalLayer
 {
 public:
-    void Encode(unsigned char* frame, string outputFile, int allCharsInFrame, int bitToFlip);
-    unsigned char* Decode(string fileToRead, int fileLength);
+    void Encode(unsigned char* frame, int allCharsInFrame, int bitToFlip);
+    unsigned char* Decode(string allDataFromTransmission);
     void WaitForConnection();
-    void ReadValues();
-    string entireEncodedFile = "";
+    string ReadValues();
+    string entireEncodedFile;
     PhysicalLayer();
     PhysicalLayer(bool clientTrans, string hostname);
     ~PhysicalLayer();
 
 private:
+    bool connectionEstablished;
     int charLocation = 0;
     unsigned char syn = '\026';
     int sockfd;

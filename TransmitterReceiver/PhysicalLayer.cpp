@@ -25,7 +25,6 @@ void *get_in_addr(struct sockaddr *sa)
 
 PhysicalLayer::PhysicalLayer(bool clientTrans, string hostname)
 {
-    hostname = "kristopher-VirtualBox";
     if (clientTrans)
     {
         int numbytes;   // listen on sock_fd
@@ -83,7 +82,7 @@ PhysicalLayer::PhysicalLayer(bool clientTrans, string hostname)
     }
     else {
         //Server
-        char buf[MAXDATASIZE + 1];//Add 1 since the last char must be a null char.
+        connectionEstablished = false;
 
         struct addrinfo hints;
         struct addrinfo *servinfo;
@@ -185,41 +184,37 @@ void PhysicalLayer::WaitForConnection()
     //We are set up and listening in on the client.
 }
 
-void PhysicalLayer::ReadValues()
+string PhysicalLayer::ReadValues()
 {
-    WaitForConnection();//Call one time.
+    if (!connectionEstablished)
+    {
+        WaitForConnection();//Call one time.
+        connectionEstablished = true;
+    }
+    unsigned char buf[MAXDATASIZE + 1];//Add 1 since the last char must be a null char.
     int read_size;
     //Receive a message from client
     while( (read_size = recv(new_fd , buf , MAXDATASIZE + 1 , 0)) > 0 )
     {
         buf[read_size] = '\0'; //Clear last character of buf
         wcout << buf << endl;
-        this->entireEncodedFile += buf[read_size];
-        //Instead of printing to the console, print to a file.
-
-//                ofstream ofs("/home/kristopher/Documents/TestTextFile/ZeroToNineReceivedM2.txt", ios::out | ios::trunc);
-//                if (ofs.good())
-//                {
-//                    unsigned char character;
-//                    for (int charCount = 0; charCount < read_size; charCount++)
-//                    {
-//                        character = buf[charCount];
-//                        ofs.put(character);
-//                    }
-//                    ofs.flush();
-//                    ofs.close();
-//                }
-
-        //Send the message back to client
-        //write(sockfd , buf , strlen(buf));
+        for (int i = 0; i < MAXDATASIZE + 1; i++)
+        {
+            if (buf[i] != '\0')
+                entireEncodedFile += buf[i];
+            else
+                break;//We are done reading the incoming values.
+        }
+        //Instead of printing to the console, return all incoming values to the data link layer so that they can be decoded in the physical layer..
     }
 
-    //Return to the data link layer with all of the encoded data before exiting the program.
-    //return entireEncodedFile;
+    //Return to the data link layer with all of the encoded data.
+
     if(read_size == 0)
     {
-        puts("Client disconnected");
-        fflush(stdout);
+        return entireEncodedFile;//We are done receiving transmissions.
+//        puts("Client disconnected");
+//        fflush(stdout);
     }
     else if(read_size == -1)
     {
@@ -228,7 +223,7 @@ void PhysicalLayer::ReadValues()
 }
 
 //Convert all of the chars to 1's and 0's.
-void PhysicalLayer::Encode(unsigned char* frames, string outputFile, int allCharsInFrame, int bitToFlip)
+void PhysicalLayer::Encode(unsigned char* frames, int allCharsInFrame, int bitToFlip)
 {
     //datafield contains: syn, ctrl, data (up to 128 data chars) and syn.
     int parityToFlip = 0;
@@ -298,7 +293,7 @@ void PhysicalLayer::Encode(unsigned char* frames, string outputFile, int allChar
         if (locTransFrame == MAXDATASIZE)
         {
             //We have filled an entire transmission frame, send it.
-
+            locTransFrame = 0; //Reset to zero since we will be starting a new transmission frame.
             unsigned char *charArray = new unsigned char[MAXDATASIZE + 1];
             charArray[MAXDATASIZE + 1] = '\0';
 
@@ -314,7 +309,8 @@ void PhysicalLayer::Encode(unsigned char* frames, string outputFile, int allChar
             //Instead of writing to a file, send data through socket.
         }
     }
-    if (keepTrackOfEveryChar == allCharsInFrame && allCharsInFrame)
+    //We still have a left over frame to send.
+    if (locTransFrame < MAXDATASIZE)
     {
         //We have exited the for loop, now we have to send the partial frame.
         //We have filled the partial frame transmission frame, send it.
@@ -322,7 +318,7 @@ void PhysicalLayer::Encode(unsigned char* frames, string outputFile, int allChar
         charArray[MAXDATASIZE + 1] = '\0';
 
         int charNum = 0;
-        while((charNum != (MAXDATASIZE + 1)) && (completeTransmissionFrame[charNum] != '\0'))
+        while((charNum != (MAXDATASIZE + 1)) && (charNum < locTransFrame)) //completeTransmissionFrame[charNum] != '\0'
         {
             charArray[charNum] = completeTransmissionFrame[charNum];
             charNum++;
@@ -335,24 +331,16 @@ void PhysicalLayer::Encode(unsigned char* frames, string outputFile, int allChar
 }
 
 //Convert the 1's and 0's to chars.
-unsigned char* PhysicalLayer::Decode(string fileToRead, int fileLength)
+unsigned char* PhysicalLayer::Decode(string allDataFromTransmission)
 {
-    int charLength = fileLength / 8;
-    unsigned char *bytes = new unsigned char[fileLength];
+    int charLength = allDataFromTransmission.length() / 8;
+    unsigned char *bytes = new unsigned char[allDataFromTransmission.length()];
     int loc = 0;
-    ifstream beginIfs(fileToRead, ios::in | ios::binary);
-    if (beginIfs.good())
+    //For every 0 or 1 in the string, put that in the bytes array.
+    for (int i = 0; i < allDataFromTransmission.length(); i++)
     {
-        char character;
-        while (beginIfs.get(character))
-        {
-            bytes[loc] = (unsigned char) character;
-            loc++;
-        }
+        bytes[i] = allDataFromTransmission.at(i);
     }
-    else
-        throw 3;
-
     //Now that we have read in all the 1's and 0's, do the parity check and construct the chars.
     int parityValue;
     int onesCount;
@@ -400,18 +388,3 @@ unsigned char* PhysicalLayer::Decode(string fileToRead, int fileLength)
     }
     return characters;
 }
-
-
-// get sockaddr, IPv4 or IPv6:
-//The kernel supplies this value.  You can get IPV4 or IPV6.
-//IPV4 example: 192.0.2.11
-//IPV6 example: 2001:0db8:c9d2:aee5:73e3:934a:a5ae:9551
-//void *PhysicalLayer::get_in_addr(struct sockaddr *sa)
-//{
-//    //If AF_INET == IPV4 then we are using protocol IPV4.
-//    if (sa->sa_family == AF_INET) {//sa_family: address family, of socket address.  IPV4 or IPV6?
-//        return &(((struct sockaddr_in*)sa)->sin_addr);
-//    }
-//
-//    return &(((struct sockaddr_in6*)sa)->sin6_addr);
-//}

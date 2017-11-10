@@ -28,8 +28,8 @@
       <file leaf-file-name="main.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/main.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="2" column="29" lean-forward="true" selection-start-line="2" selection-start-column="29" selection-end-line="2" selection-end-column="29" />
+            <state relative-caret-position="36">
+              <caret line="4" column="20" lean-forward="true" selection-start-line="4" selection-start-column="20" selection-end-line="4" selection-end-column="20" />
               <folding />
             </state>
           </provider>
@@ -38,8 +38,8 @@
       <file leaf-file-name="PhysicalLayer.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/PhysicalLayer.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="252">
-              <caret line="215" column="0" lean-forward="true" selection-start-line="215" selection-start-column="0" selection-end-line="215" selection-end-column="0" />
+            <state relative-caret-position="225">
+              <caret line="388" column="0" lean-forward="false" selection-start-line="388" selection-start-column="0" selection-end-line="388" selection-end-column="0" />
               <folding>
                 <element signature="e#44#70#0" expanded="true" />
               </folding>
@@ -47,11 +47,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="PhysicalLayer.h" pinned="false" current-in-tab="true">
+      <file leaf-file-name="PhysicalLayer.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/PhysicalLayer.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="269">
-              <caret line="55" column="8" lean-forward="true" selection-start-line="55" selection-start-column="8" selection-end-line="55" selection-end-column="8" />
+            <state relative-caret-position="82">
+              <caret line="46" column="38" lean-forward="false" selection-start-line="46" selection-start-column="38" selection-end-line="46" selection-end-column="38" />
               <folding>
                 <element signature="e#202#220#0" expanded="true" />
                 <element signature="e#451#470#0" expanded="true" />
@@ -64,8 +64,8 @@
       <file leaf-file-name="DataLinkLayer.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/DataLinkLayer.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="121">
-              <caret line="135" column="30" lean-forward="true" selection-start-line="135" selection-start-column="30" selection-end-line="135" selection-end-column="30" />
+            <state relative-caret-position="125">
+              <caret line="196" column="0" lean-forward="false" selection-start-line="196" selection-start-column="0" selection-end-line="196" selection-end-column="0" />
               <folding>
                 <element signature="e#44#70#0" expanded="true" />
               </folding>
@@ -76,18 +76,18 @@
       <file leaf-file-name="DataLinkLayer.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/DataLinkLayer.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="108">
-              <caret line="9" column="19" lean-forward="false" selection-start-line="9" selection-start-column="19" selection-end-line="9" selection-end-column="19" />
+            <state relative-caret-position="183">
+              <caret line="14" column="82" lean-forward="false" selection-start-line="14" selection-start-column="82" selection-end-line="14" selection-end-column="82" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ApplicationLayer.cpp" pinned="false" current-in-tab="false">
+      <file leaf-file-name="ApplicationLayer.cpp" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/ApplicationLayer.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="129">
-              <caret line="70" column="25" lean-forward="false" selection-start-line="70" selection-start-column="16" selection-end-line="70" selection-end-column="25" />
+            <state relative-caret-position="118">
+              <caret line="64" column="14" lean-forward="false" selection-start-line="64" selection-start-column="14" selection-end-line="64" selection-end-column="14" />
               <folding>
                 <element signature="e#44#73#0" expanded="true" />
               </folding>
@@ -98,8 +98,8 @@
       <file leaf-file-name="ApplicationLayer.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/ApplicationLayer.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="234">
-              <caret line="13" column="75" lean-forward="false" selection-start-line="13" selection-start-column="66" selection-end-line="13" selection-end-column="75" />
+            <state relative-caret-position="270">
+              <caret line="15" column="55" lean-forward="true" selection-start-line="15" selection-start-column="55" selection-end-line="15" selection-end-column="55" />
               <folding />
             </state>
           </provider>
@@ -109,36 +109,36 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>everyframe</find>
-      <find>fullframes</find>
-      <find>argc</find>
-      <find>allchar</find>
-      <find>maxdatasize =</find>
-      <find>syn</find>
-      <find>framing</find>
-      <find>phsyical</find>
-      <find>unsigned char</find>
-      <find>sigchld_handler</find>
-      <find>bittoflip</find>
-      <find>physicallayer pl</find>
-      <find>return</find>
-      <find>get_in_addr</find>
-      <find>sa</find>
-      <find>!</find>
-      <find>getaddrinfo</find>
-      <find>client disconnected</find>
-      <find>buf</find>
-      <find>maxdatasize</find>
-      <find>locTransFrame</find>
-      <find>port</find>
-      <find>hamming</find>
-      <find>allcharsinframe</find>
-      <find>extraFrameLength</find>
-      <find>close</find>
-      <find>loctransframe</find>
-      <find>hamming(</find>
-      <find>fullFrames</find>
       <find>new_fd</find>
+      <find>buf</find>
+      <find>zerotonine</find>
+      <find>bytes</find>
+      <find>64</find>
+      <find>67</find>
+      <find>allDataLength</find>
+      <find>charLength</find>
+      <find>bytesTowritetofile</find>
+      <find>connections changed</find>
+      <find>physicallayer</find>
+      <find>dehamming</find>
+      <find>bytesToWriteToFile</find>
+      <find>deframing(</find>
+      <find>zero</find>
+      <find>$PROJECT_DIR$/../../../..</find>
+      <find>framing</find>
+      <find>fileToWriteTo</find>
+      <find>commandt</find>
+      <find>numberofprin</find>
+      <find>deframing</find>
+      <find>decode</find>
+      <find>krist</find>
+      <find>framin</find>
+      <find>encode</find>
+      <find>loctransframe</find>
+      <find>keeptrackofeverychar</find>
+      <find>allCharsInFrame</find>
+      <find>commandtham</find>
+      <find>everybyteineveryframe =</find>
     </findStrings>
   </component>
   <component name="IdeDocumentHistory">
@@ -149,12 +149,12 @@
         <option value="$PROJECT_DIR$/cmake-build-debug/physicalLayer.cpp" />
         <option value="$PROJECT_DIR$/PhysicalLater.h" />
         <option value="$PROJECT_DIR$/applicationLayer.cpp" />
+        <option value="$PROJECT_DIR$/PhysicalLayer.h" />
         <option value="$PROJECT_DIR$/ApplicationLayer.h" />
         <option value="$PROJECT_DIR$/DataLinkLayer.h" />
-        <option value="$PROJECT_DIR$/main.cpp" />
         <option value="$PROJECT_DIR$/ApplicationLayer.cpp" />
-        <option value="$PROJECT_DIR$/PhysicalLayer.h" />
         <option value="$PROJECT_DIR$/PhysicalLayer.cpp" />
+        <option value="$PROJECT_DIR$/main.cpp" />
         <option value="$PROJECT_DIR$/DataLinkLayer.cpp" />
       </list>
     </option>
@@ -209,7 +209,7 @@
     <configuration name="Build All" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" CONFIG_NAME="Debug" EXPLICIT_BUILD_TARGET_NAME="all">
       <envs />
     </configuration>
-    <configuration name="TransmitterReceiver" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="-rh kristopher-VirtualBox" PASS_PARENT_ENVS_2="true" PROJECT_NAME="TransmitterReceiver" TARGET_NAME="TransmitterReceiver" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="TransmitterReceiver" RUN_TARGET_NAME="TransmitterReceiver">
+    <configuration name="TransmitterReceiver" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="-rh kristopher-VirtualBox /home/kristopher/Documents/TestTextFile/HammingOutput.txt" PASS_PARENT_ENVS_2="true" PROJECT_NAME="TransmitterReceiver" TARGET_NAME="TransmitterReceiver" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="TransmitterReceiver" RUN_TARGET_NAME="TransmitterReceiver">
       <envs />
     </configuration>
     <list size="2">
@@ -256,35 +256,36 @@
       <workItem from="1510084693034" duration="8000" />
       <workItem from="1510090739902" duration="2481000" />
       <workItem from="1510162530964" duration="15797000" />
-      <workItem from="1510243603147" duration="19845000" />
+      <workItem from="1510243603147" duration="20035000" />
+      <workItem from="1510336667775" duration="21186000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="156525000" />
+    <option name="totallyTimeSpent" value="177901000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="65" y="-4" width="1535" height="799" extended-state="6" />
+    <frame x="65" y="-4" width="1537" height="807" extended-state="6" />
     <editor active="true" />
     <layout>
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.070358306" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.31223023" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25755396" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.070358306" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.15971223" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24604316" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.37266186" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Data View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.15971223" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
     <layout-to-restore>
@@ -320,24 +321,53 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/PhysicalLayer.cpp</url>
-          <line>332</line>
+          <line>328</line>
           <option name="timeStamp" value="201" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
           <url>file://$PROJECT_DIR$/PhysicalLayer.cpp</url>
-          <line>316</line>
-          <option name="timeStamp" value="213" />
+          <line>228</line>
+          <option name="timeStamp" value="263" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/PhysicalLayer.cpp</url>
+          <line>296</line>
+          <option name="timeStamp" value="264" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/PhysicalLayer.cpp</url>
+          <line>305</line>
+          <option name="timeStamp" value="265" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/PhysicalLayer.cpp</url>
+          <line>312</line>
+          <option name="timeStamp" value="266" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/DataLinkLayer.cpp</url>
+          <line>248</line>
+          <option name="timeStamp" value="268" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/DataLinkLayer.cpp</url>
+          <line>229</line>
+          <option name="timeStamp" value="269" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/DataLinkLayer.cpp</url>
+          <line>196</line>
+          <option name="timeStamp" value="270" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/ApplicationLayer.cpp</url>
+          <line>67</line>
+          <option name="timeStamp" value="271" />
         </line-breakpoint>
       </breakpoints>
-      <option name="time" value="215" />
+      <option name="time" value="274" />
     </breakpoint-manager>
-    <watches-manager>
-      <configuration name="CMakeRunConfiguration">
-        <watch expression="dataField.length()" />
-        <watch expression="dataField" language="ObjectiveC" />
-        <watch expression="HammingValues[theChar]" />
-      </configuration>
-    </watches-manager>
+    <watches-manager />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/ApplicationLayer.h">
@@ -677,23 +707,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="154">
           <caret line="23" column="7" lean-forward="false" selection-start-line="23" selection-start-column="7" selection-end-line="23" selection-end-column="7" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/main.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="2" column="29" lean-forward="true" selection-start-line="2" selection-start-column="29" selection-end-line="2" selection-end-column="29" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ApplicationLayer.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="234">
-          <caret line="13" column="75" lean-forward="false" selection-start-line="13" selection-start-column="66" selection-end-line="13" selection-end-column="75" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -701,22 +714,59 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-1699">
           <caret line="193" column="0" lean-forward="false" selection-start-line="193" selection-start-column="0" selection-end-line="193" selection-end-column="0" />
-          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/PhysicalLayer.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="82">
+          <caret line="46" column="38" lean-forward="false" selection-start-line="46" selection-start-column="38" selection-end-line="46" selection-end-column="38" />
+          <folding>
+            <element signature="e#202#220#0" expanded="true" />
+            <element signature="e#451#470#0" expanded="true" />
+            <element signature="e#845#866#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/DataLinkLayer.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="108">
-          <caret line="9" column="19" lean-forward="false" selection-start-line="9" selection-start-column="19" selection-end-line="9" selection-end-column="19" />
+        <state relative-caret-position="183">
+          <caret line="14" column="82" lean-forward="false" selection-start-line="14" selection-start-column="82" selection-end-line="14" selection-end-column="82" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ApplicationLayer.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="270">
+          <caret line="15" column="55" lean-forward="true" selection-start-line="15" selection-start-column="55" selection-end-line="15" selection-end-column="55" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/main.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="36">
+          <caret line="4" column="20" lean-forward="true" selection-start-line="4" selection-start-column="20" selection-end-line="4" selection-end-column="20" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/PhysicalLayer.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="225">
+          <caret line="388" column="0" lean-forward="false" selection-start-line="388" selection-start-column="0" selection-end-line="388" selection-end-column="0" />
+          <folding>
+            <element signature="e#44#70#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/DataLinkLayer.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="121">
-          <caret line="135" column="30" lean-forward="true" selection-start-line="135" selection-start-column="30" selection-end-line="135" selection-end-column="30" />
+        <state relative-caret-position="125">
+          <caret line="196" column="0" lean-forward="false" selection-start-line="196" selection-start-column="0" selection-end-line="196" selection-end-column="0" />
           <folding>
             <element signature="e#44#70#0" expanded="true" />
           </folding>
@@ -725,32 +775,10 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/ApplicationLayer.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="129">
-          <caret line="70" column="25" lean-forward="false" selection-start-line="70" selection-start-column="16" selection-end-line="70" selection-end-column="25" />
+        <state relative-caret-position="118">
+          <caret line="64" column="14" lean-forward="false" selection-start-line="64" selection-start-column="14" selection-end-line="64" selection-end-column="14" />
           <folding>
             <element signature="e#44#73#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/PhysicalLayer.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="252">
-          <caret line="215" column="0" lean-forward="true" selection-start-line="215" selection-start-column="0" selection-end-line="215" selection-end-column="0" />
-          <folding>
-            <element signature="e#44#70#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/PhysicalLayer.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="269">
-          <caret line="55" column="8" lean-forward="true" selection-start-line="55" selection-start-column="8" selection-end-line="55" selection-end-column="8" />
-          <folding>
-            <element signature="e#202#220#0" expanded="true" />
-            <element signature="e#451#470#0" expanded="true" />
-            <element signature="e#845#866#0" expanded="true" />
           </folding>
         </state>
       </provider>

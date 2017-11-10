@@ -20,18 +20,17 @@ ApplicationLayer::~ApplicationLayer()
 }
 
 //file1 is the file to read from, file2 is the file to write to.
-void ApplicationLayer::CommandT(string file1, string file2, int bitToFlip, bool ham, bool clientTransmitting)
+void ApplicationLayer::CommandT(string hostname, string fileToReadFrom, int bitToFlip, bool ham, bool clientTransmitting)
 {
-    file1 = "/home/kristopher/Documents/TestTextFile/ZeroToNine.txt";
     //Clear out the file in case it exists, this way we can simply append to it later on.
     //ofstream ofs(file2, ios::out | ios::trunc);
     DataLinkLayer dl;
-    ifstream ifsLeng(file1, ios::in | ios::ate);
+    ifstream ifsLeng(fileToReadFrom, ios::in | ios::ate);
     int fileLength = ifsLeng.tellg();
     ifsLeng.close();
 
     //Open the file and get the data length of the extra frame's.
-    ifstream ifs (file1, ios::in | ios::binary);
+    ifstream ifs (fileToReadFrom, ios::in | ios::binary);
     int extraFrameCharLength = fileLength % 64;
     if (ifs.good())
     {
@@ -50,7 +49,7 @@ void ApplicationLayer::CommandT(string file1, string file2, int bitToFlip, bool 
             charCount++;
         }
 
-        dl.Framing(chars, file2, allCharactersInFrame, fullFrames, extraFrameDataLength, bitToFlip, ham, clientTransmitting);
+        dl.Framing(chars, hostname, allCharactersInFrame, fullFrames, extraFrameDataLength, bitToFlip, ham, clientTransmitting);
 
         ifs.close();
     }
@@ -59,46 +58,23 @@ void ApplicationLayer::CommandT(string file1, string file2, int bitToFlip, bool 
 }
 
 //file1 is the file to read from, file2 is the file to write to.
-void ApplicationLayer::CommandR(string file1, string file2, bool ham, bool clientTransmitting)
+void ApplicationLayer::CommandR(string hostname, string fileToWriteTo, bool ham, bool clientTransmitting)
 {
-    //ifstream ifs(file1, ios::in | ios::ate);
-    int fileLength = 100;//ifs.tellg();
-    //ifs.close();
-    //if (fileLength == -1)
-        //throw 3;
     DataLinkLayer dl;
     unsigned char *values;
-    values = dl.Deframing(file1, fileLength, ham, clientTransmitting);
-    //Grab the number of chars that will make up the decoded file.
-
-    int charLength = fileLength / 8;
-    int printableChars = 0;
-    int tempFileLength;
-    while(charLength > 0)
-    {
-        tempFileLength = charLength;
-        charLength -= 67;
-        //In case we don't grab the last non full frame, we need to get the char count of that one.
-        if (charLength < 0)
-        {
-            tempFileLength -= 3;
-            printableChars += tempFileLength;
-            break;
-        }
-        //We've accounted for the frame, but we will only print 64 chars from the frame.
-        tempFileLength -= 67;
-        printableChars += 64;
-    }
-    //We have all of the chars, write them to the file.
-    ofstream ofs(file2, ios::out | ios::trunc);
+    values = dl.Deframing(ham, clientTransmitting, hostname);
+    int dehammingCharCount = dl.NumberOfPrintableChars();
+    ofstream ofs(fileToWriteTo, ios::out | ios::trunc);
     if (ofs.good())
     {
         unsigned char character;
-        for (int charCount = 0; charCount < printableChars; charCount++)
+
+        for (int charToGet = 0; charToGet < dehammingCharCount; charToGet++)
         {
-            character = values[charCount];
+            character = values[charToGet];
             ofs.put(character);
         }
+
         ofs.flush();
         ofs.close();
     }
@@ -128,14 +104,14 @@ void ApplicationLayer::CommandTWithError(string file1, string file2)
         throw 3;
 }
 
-void ApplicationLayer::CommandTHam(string file1, string file2, bool ham, bool clientTransmitting)
+void ApplicationLayer::CommandTHam(string hostname, string fileToReadFrom, bool ham, bool clientTransmitting)
 {
-    CommandT(file1, file2, -1, ham, clientTransmitting);
+    CommandT(hostname, fileToReadFrom, -1, ham, clientTransmitting);
 }
 
-void ApplicationLayer::CommandRHam(string file1, string file2, bool ham, bool clientTransmitting)
+void ApplicationLayer::CommandRHam(string hostname, string fileToWriteTo, bool ham, bool clientTransmitting)
 {
-    CommandR(file1, file2, true, false);
+    CommandR(hostname, fileToWriteTo, ham, clientTransmitting);
 }
 
 

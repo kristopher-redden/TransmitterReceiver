@@ -92,10 +92,10 @@ DataLinkLayer::~DataLinkLayer()
 }
 
 //Format the data into frames: SYN + CTRL + Data + SYN
-void DataLinkLayer::Framing(unsigned char* allData, string fileToWriteTo, int allCharsInFrame, int fullFrames, int extraFrameDataLength, int bitToFlip, bool hamming, bool clientTransmitting)
+void DataLinkLayer::Framing(unsigned char* allData, string hostname, int allCharsInFrame, int fullFrames, int extraFrameDataLength, int bitToFlip, bool hamming, bool clientTransmitting)
 {
     if (hamming)
-        Hamming(allData, fileToWriteTo, allCharsInFrame, fullFrames, extraFrameDataLength, bitToFlip, clientTransmitting);
+        Hamming(allData, hostname, allCharsInFrame, fullFrames, extraFrameDataLength, bitToFlip, clientTransmitting);
     else
         CRC();
 //    unsigned char *frames = new unsigned char[allCharsInFrame];
@@ -129,18 +129,25 @@ void DataLinkLayer::Framing(unsigned char* allData, string fileToWriteTo, int al
 //We will call the physical layer to check the parity of all of the characters in the encoded file.
 //If we return from the physical layer, then we know all of the parity passed.  Check the frames to
 //make sure that the first and last characters are SYN characters.
-unsigned char* DataLinkLayer::Deframing(string fileToRead, int fileLength, bool hamming, bool clientTransmitter)
+unsigned char* DataLinkLayer::Deframing(bool hamming, bool clientTransmitter, string hostname)
 {
-    PhysicalLayer *pl = new PhysicalLayer(clientTransmitter, "Hostname");
-    unsigned char *bytes;
+    PhysicalLayer *pl = new PhysicalLayer(clientTransmitter, hostname);
+    unsigned char *hammingDoubledArray;
     unsigned char currentChar;
-    pl->ReadValues();
-    bytes = pl->Decode(fileToRead, fileLength);
+    string allData = pl->ReadValues();
+    int allDataLength = allData.length() / 8;//Number of chars from hamming.
+    hammingDoubledArray = pl->Decode(allData);
+    unsigned char *unhammingedM1Frame = DeHamming(hammingDoubledArray, allDataLength);
 
-    int fullFrameCount = fileLength / 536;
-    int lastFrameLength = fileLength % 536 / 8;
-    int lastFrameChecked;
-    unsigned char *bytesToWriteToFile = new unsigned char[fullFrameCount * 64 + lastFrameLength - 3];
+//    int fullFrames = allDataLength / 131;
+//    int extraFrame = allDataLength % 131;
+//    int originalFrameM1 = fullFrames * 67 + (extraFrame - 3) / 2 + 3; //Get rid of the SYN, CTRL, and SYN to get actual data count.
+    int fullFrameCount = everyByteInEveryFrame / 67;
+    int lastFrameLength = everyByteInEveryFrame % 67;
+    int lastFrameChecked = -1;
+    //unsigned char *bytesToWriteToFile = new unsigned char[fullFrameCount * 64 + lastFrameLength - 3];
+    unsigned char *bytesToWriteToFile = new unsigned char[everyByteInEveryFrame];
+
     int bytesToWriteIndex = 0;
 
     //If all the parity checked out, being the deframing.
@@ -150,19 +157,19 @@ unsigned char* DataLinkLayer::Deframing(string fileToRead, int fileLength, bool 
     //Go through the entire set of chars from each full frame.
     for (int fullFrames = 0; fullFrames < fullFrameCount; fullFrames++)
     {
-        firstSYN = bytes[fullFrames * 67];
-        lastSYN = bytes[(fullFrames + 1) * 67 - 1];
-        ctrl = bytes[fullFrames * 67 + 1];
+        firstSYN = unhammingedM1Frame[fullFrames * 67];
+        lastSYN = unhammingedM1Frame[(fullFrames + 1) * 67 - 1];
+        ctrl = unhammingedM1Frame[fullFrames * 67 + 1];
 
         //If the first and last character of a frame are not a SYN, then we have an invalid frame.
         if (firstSYN != syn || lastSYN != syn)
             throw 1;
 
-        lastFrameChecked = fullFrames;
+        lastFrameChecked++;
         //Otherwise, we have a valid frame, construct the data to print.
         for (int partOfFrame = 0; partOfFrame < 64; partOfFrame++)
         {
-            bytesToWriteToFile[bytesToWriteIndex] = bytes[fullFrames * 67 + 2 + partOfFrame];
+            bytesToWriteToFile[bytesToWriteIndex] = unhammingedM1Frame[fullFrames * 67 + 2 + partOfFrame];
             bytesToWriteIndex++;
         }
     }
@@ -172,11 +179,10 @@ unsigned char* DataLinkLayer::Deframing(string fileToRead, int fileLength, bool 
     {
         //If lastFrameChecked is 0, then we know that we had a file length of less than 64 data characters.
         //Set the value to -1 so that we can fill in the only frame (which is less than 64 data characters.)
-        if (lastFrameChecked == 0)
-            lastFrameChecked = -1;
-        firstSYN = bytes[(lastFrameChecked + 1) * 67];
-        lastSYN = bytes[(lastFrameChecked + 1) * 67 + lastFrameLength - 1];
-        ctrl = bytes[(lastFrameChecked + 1) * 67 + 1];
+
+        firstSYN = unhammingedM1Frame[(lastFrameChecked + 1) * 67];
+        lastSYN = unhammingedM1Frame[(lastFrameChecked + 1) * 67 + lastFrameLength - 1];
+        ctrl = unhammingedM1Frame[(lastFrameChecked + 1) * 67 + 1];
         //If the first and last character of a frame are not a SYN, then we have an invalid frame.
         if (firstSYN != syn || lastSYN != syn)
             throw 1;
@@ -184,14 +190,14 @@ unsigned char* DataLinkLayer::Deframing(string fileToRead, int fileLength, bool 
         //Otherwise, we have a valid frame, construct the data to print.
         for (int partOfFrame = 0; partOfFrame < lastFrameLength - 3; partOfFrame++)
         {
-            bytesToWriteToFile[bytesToWriteIndex] = bytes[(lastFrameChecked + 1) * 67 + 2 + partOfFrame];
+            bytesToWriteToFile[bytesToWriteIndex] = unhammingedM1Frame[(lastFrameChecked + 1) * 67 + 2 + partOfFrame];
             bytesToWriteIndex++;
         }
     }
     return bytesToWriteToFile;
 }
 
-void DataLinkLayer::Hamming(unsigned char *allData, string fileToWriteTo, int allCharsInFrame, int fullFrames, int extraFrameDataLength, int bitToFlip, bool clientTransmitting)
+void DataLinkLayer::Hamming(unsigned char *allData, string hostname, int allCharsInFrame, int fullFrames, int extraFrameDataLength, int bitToFlip, bool clientTransmitting)
 {
     int fullFrameLength = fullFrames * 131;//Every full frame has 131 chars. SYN + CTRL + 128 Data chars + SYN
     int extraFrameLength = extraFrameDataLength * 2 + 3;//The extraFrameDataLength is the data length of the extra frame.
@@ -228,7 +234,7 @@ void DataLinkLayer::Hamming(unsigned char *allData, string fileToWriteTo, int al
     {
         //Offset by 2 handles the SYN and CTRL.
         //frames[fullFrames * 131 + charLocation + 2] = allData[fullFrames * 128 + charLocation];
-        unsigned char theChar = allData[fullFrames * 128 + charLocation];
+        unsigned char theChar = allData[fullFrames * 64 + charLocation];
         uint16_t  twoChars = HammingValues[theChar];
         unsigned char low = (unsigned char) twoChars & 0xff;
         unsigned char high = (unsigned char) ((twoChars >> 8) & 0xff);
@@ -238,11 +244,104 @@ void DataLinkLayer::Hamming(unsigned char *allData, string fileToWriteTo, int al
     }
     frames[fullFrames * 131 + extraFrameLength - 1] = '\x16';
 
-    PhysicalLayer *pl = new PhysicalLayer(clientTransmitting, "hostname");
+    PhysicalLayer *pl = new PhysicalLayer(clientTransmitting, hostname);
 
-    pl->Encode(frames, fileToWriteTo, allCharsInEveryFrame, bitToFlip);
+    pl->Encode(frames, allCharsInEveryFrame, bitToFlip);
 }
 
+unsigned char* DataLinkLayer::DeHamming(unsigned char* charArrayDoubledData, int allDataLength)
+{
+    uint8_t low = 0x0;
+    uint8_t high = 0x0;
+    uint8_t checkBits = 0x0;
+    uint8_t top = 0x0;
+    uint8_t middle = 0x0;
+    uint8_t bottom = 0x0;
+    uint8_t constructingRealValue = 0x0;
+    uint16_t hamming = 0x0;
+    int fullFrames = allDataLength / 131;
+    int extraFrame = allDataLength % 131;
+    everyByteInEveryFrame = fullFrames * 67 + (extraFrame - 3) / 2 + 3; //Get rid of the SYN, CTRL, and SYN to get actual data count. (- 3 div) 2 + 3
+    dehammingCharCount = fullFrames * 64 + (extraFrame - 3) / 2;//Only the dehamming char count.
+    unsigned char *correctData = new unsigned char[everyByteInEveryFrame];
+    int correctDataLoc = 0;
+    for (int hamValueLoc = 0; hamValueLoc < allDataLength; hamValueLoc++)
+    {
+        //Skip the SYN, CTRL and SYN located in the first, second and last location of the frame. (0, 1 and 130)  Make sure you skip the SYN char on the non full frame. == 22 handles this.
+        if (hamValueLoc % 131 == 0 || hamValueLoc % 131 == 1 || hamValueLoc % 131 == 130 || charArrayDoubledData[hamValueLoc] == 22)
+        {
+            unsigned char synOrCtrl = (unsigned char)charArrayDoubledData[hamValueLoc];
+
+            correctData[correctDataLoc] = synOrCtrl;
+            correctDataLoc++;
+            continue;
+        }
+        else
+        {
+            high = low = checkBits = top = middle = bottom = constructingRealValue = 0x0;
+            hamming = 0x00;
+            high = charArrayDoubledData[hamValueLoc];
+            low = charArrayDoubledData[hamValueLoc + 1];
+            hamValueLoc++;//Skip ahead so we don't repeat the same char.
+            //Clear the parity.
+            high &= 0x7f;
+            low &= 0x7f;
+            //only need the five bits in the low byte.  Remove the padding.
+            low >>= 2;
+            hamming |= high;
+            //Shift left 5 since the low byte only has 5 more bits to get.
+            hamming <<= 5;
+            hamming |= low;
+
+            //Now we have the 12 bits that we need.
+            //Get c1, c2, c3, and c4.
+            //c4
+            if (((~((hamming << 1)^(hamming << 2)^(hamming << 3) ^ (hamming << 4))) & 0x10) != (hamming & 0x10))
+                checkBits |= 0x8;
+            //c3
+            if (((~((hamming << 1)^(hamming << 2)^(hamming << 3) ^ (hamming << 8))) & 0x100) != (hamming & 0x100))
+                checkBits |= 0x4;
+            //c2
+            if (((~((hamming << 1)^(hamming << 4)^(hamming << 5) ^ (hamming << 8) ^ (hamming << 9))) & 0x400) != (hamming & 0x400))
+                checkBits |= 0x2;
+            //c1
+            if (((~((hamming << 2)^(hamming << 4)^(hamming << 6) ^ (hamming << 8) ^ (hamming << 10))) & 0x800) != (hamming & 0x800))
+                checkBits |= 0x1;
+
+            if (checkBits != 0x0)
+            {
+                //hamming << checkBits;
+                hamming ^= hamming << checkBits;
+                //number ^= 1UL << x;
+            }
+            hamming &= 0x2EF; //Clear the check bits.
+
+            //unsigned char theRealChar = (unsigned char)(hamming & 0x0FF | (hamming >> 1) | (hamming >> 2));
+            unsigned char theRealChar;
+            top |= (((hamming & 0x200) >> 1) >> 8);//Get m1
+            constructingRealValue |= top;
+            constructingRealValue <<= 3;
+
+            middle |= (((hamming & 0x0E0) >> 1) >> 4);//Get m2, m3, m4
+            constructingRealValue |= middle;
+            constructingRealValue <<= 4;
+
+            bottom |= ((hamming & 0x00F));//Get m5, m6, m7, m8.
+            constructingRealValue |= bottom;
+
+            theRealChar = (unsigned char)constructingRealValue;
+
+            correctData[correctDataLoc] = theRealChar;
+            correctDataLoc++;
+        }
+    }
+    return correctData;
+}
+
+int DataLinkLayer::NumberOfPrintableChars()
+{
+    return dehammingCharCount;
+}
 void DataLinkLayer::CRC()
 {
 
