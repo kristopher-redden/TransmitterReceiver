@@ -216,7 +216,7 @@ void DataLinkLayer::Hamming(unsigned char *allData, string hostname, int allChar
             //Initially it will be 2 - 130.
             //Offset by 2 handles the SYN and CTRL.
             //Get the char from the input file.
-            unsigned char theChar = allData[loc * 128 + characterLoc];
+            unsigned char theChar = allData[loc * 64 + characterLoc];//Mul by 64 since allData contains the original file data.
             uint16_t  twoChars = HammingValues[theChar];
             unsigned char low = (unsigned char) twoChars & 0xff;
             unsigned char high = (unsigned char) ((twoChars >> 8) & 0xff);
