@@ -345,16 +345,24 @@ int DataLinkLayer::NumberOfPrintableChars()
 
 void DataLinkLayer::CRC(unsigned char* allData, string hostname, int allCharsInFrame, int fullFrames, int extraFrameDataLength, bool clientTransmitting)
 {
-    int fullFrameLength = fullFrames * 67 + 1;//Every full frame has 67 bytes. 64 Data chars + 3 CRC
-    //int extraFrameLength = extraFrameDataLength + 3;//The extraFrameDataLength is the data length of the extra frame + the 3 CRC values.
+    int totalFrames = allCharsInFrame / 64;
+    if (allCharsInFrame % 64 != 0)//We have an extra frame.
+        totalFrames++;
+    int allDataCharsInEveryFrame = totalFrames * 67;
+    int onlyDataChars = fullFrames * 64 + extraFrameDataLength;
+    //int fullFrameLength = fullFrames * 64;//Every full frame has 67 bytes. 64 Data chars + 3 CRC
+    //int extraFrameLength = extraFrameDataLength;//The extraFrameDataLength is the data length of the extra frame + the 3 CRC values.
     //int allDataCharsInEveryFrame = fullFrameLength + extraFrameLength;
 
     unsigned char* dataWithCRC = new unsigned char[allDataCharsInEveryFrame];
+    for (int i = 0; i < allDataCharsInEveryFrame; i++)
+        dataWithCRC[i] = '\0';
+
     uint16_t dividend = 0x0;    //holds 2 characters at a time to perform xor operation on
     uint8_t buf = 0x0;       //Contains the next char to use to add bits to the dividend.
     uint16_t pattern = 0x8005;
     int charCount = 0;
-    for(int textFileLoc = 0, crcArrayLoc = 0; textFileLoc < allDataCharsInEveryFrame; textFileLoc++, crcArrayLoc++)
+    for(int textFileLoc = 0, crcArrayLoc = 0; textFileLoc < onlyDataChars; textFileLoc++, crcArrayLoc++)
     {
         //Keep adding chars to the crc array.
         dataWithCRC[crcArrayLoc] = allData[textFileLoc];
@@ -375,14 +383,16 @@ void DataLinkLayer::CRC(unsigned char* allData, string hostname, int allCharsInF
     dividend |= dataWithCRC[1];
     buf = dataWithCRC[2];
     int textFileDataProcessed = 3;//This is the next char to look it.
+    int numInFrame = 3;
     int bufferCount = 8;
     int frame = 1;
-    while (textFileDataProcessed < 134)//134
+    while (textFileDataProcessed < allDataCharsInEveryFrame)
     {
         //While the value in the front is a zero, we need to shift over.
         while ((dividend & 0x8000) == 0x0)
         {
             //If the buffer is empty put a char in the buffer.
+            //HAVE TO CHECK THE BUFFER BEFORE DOING ANYTHING ELSE SINCE THE ELSE IF USES THE VALUE THAT IS IN THE BUFFER.
             if (bufferCount > 0)
             {
                 dividend <<= 1;
@@ -391,27 +401,30 @@ void DataLinkLayer::CRC(unsigned char* allData, string hostname, int allCharsInF
                 bufferCount--;//Dec the buffer count until the number of buffer bits runs out.
             }
             //The buffer is not empty, shift over as long as we are in the same frame.
-            else if (textFileDataProcessed != 66)
+            //else if (textFileDataProcessed != 66)
+            else if (numInFrame != 66)
             {
                 buf = dataWithCRC[textFileDataProcessed];//Load the char and put it into the buffer.
                 textFileDataProcessed++;//This is the next char that we will load into the buffer.
+                numInFrame++;
 
                 //Shift the dividend over 1 so we can or it with the first buffer value.
                 dividend <<= 1;
                 dividend |= (buf >> 7);
                 buf <<= 1;
                 bufferCount = 7;//This is the number of buffer bits that have been processed.
-                if (textFileDataProcessed == 65)
+                if (numInFrame == 66)
                     bufferCount--;
             }
             //We are in a new frame.
             else
             {
                 //The CRC is what is left over in the dividend.
-                dataWithCRC[frame * 64] = (unsigned char) ((dividend >> 14) & 0x1);
-                dataWithCRC[frame * 64 + 1] = (unsigned char) ((dividend >> 7) & 0x7F);
-                dataWithCRC[frame * 64 + 2] = (unsigned char) (dividend & 0x7F);
+                dataWithCRC[frame * 64] = (unsigned char) ((dividend >> 8) & 0x7F);
+                dataWithCRC[frame * 64 + 1] = (unsigned char) ((dividend >> 1) & 0x7F);
+                dataWithCRC[frame * 64 + 2] = (unsigned char) ((dividend << 6) & 0x40);
 
+                textFileDataProcessed++;
                 //Create the next dividend and load the next char into the buffer.
                 dividend = dataWithCRC[textFileDataProcessed];
                 textFileDataProcessed++;
@@ -419,7 +432,9 @@ void DataLinkLayer::CRC(unsigned char* allData, string hostname, int allCharsInF
                 dividend |= dataWithCRC[textFileDataProcessed];
                 textFileDataProcessed++;
                 buf = dataWithCRC[textFileDataProcessed];
+                textFileDataProcessed++;
                 bufferCount = 8;
+                numInFrame = 3;
             }
         }
         //We know that the first number in the dividend is a zero.
