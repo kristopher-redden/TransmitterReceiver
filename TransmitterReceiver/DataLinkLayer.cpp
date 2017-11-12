@@ -98,32 +98,6 @@ void DataLinkLayer::Framing(unsigned char* allData, string hostname, int allChar
         Hamming(allData, hostname, allCharsInFrame, fullFrames, extraFrameDataLength, bitToFlip, clientTransmitting);
     else
         CRC(allData, hostname, allCharsInFrame, fullFrames, extraFrameDataLength, clientTransmitting);
-//    unsigned char *frames = new unsigned char[allCharsInFrame];
-//    for (int loc = 0; loc < fullFrames; loc++)
-//    {
-//        frames[loc * 67] = '\x16';
-//        frames[loc * 67 + 1] = (unsigned char) 64;
-//        for (int characterLoc = 0; characterLoc < 64; characterLoc++)
-//        {
-//            //Initially it will be 2 - 65.
-//            //Offset by 2 handles the SYN and CTRL.
-//            frames[loc * 67 + characterLoc + 2] = allData[loc * 64 + characterLoc];
-//        }
-//        frames[(loc + 1) * 67 - 1] = '\x16';
-//    }
-//    //Now that we have taken care of the full frames, do the last smaller frame.
-//    frames[fullFrames * 67] = '\x16';
-//    frames[fullFrames * 67 + 1] = (unsigned char) extraFrameDataLength;
-//
-//    for (int charLocation = 0; charLocation < extraFrameDataLength; charLocation++)
-//    {
-//        //Offset by 2 handles the SYN and CTRL.
-//        frames[fullFrames * 67 + charLocation + 2] = allData[fullFrames * 64 + charLocation];
-//    }
-//    frames[fullFrames * 67 + extraFrameDataLength + 2] = '\x16';
-//
-//    PhysicalLayer pl;
-//    pl.Encode(frames, fileToWriteTo, allCharsInFrame, bitToFlip);
 }
 
 //We will call the physical layer to check the parity of all of the characters in the encoded file.
@@ -195,6 +169,141 @@ unsigned char* DataLinkLayer::Deframing(bool hamming, bool clientTransmitter, st
         }
     }
     return bytesToWriteToFile;
+}
+
+unsigned char* DataLinkLayer::DeframingCRC(bool clientTransmitter, string hostname)
+{
+    PhysicalLayer *pl = new PhysicalLayer(clientTransmitter, hostname);
+    unsigned char *everyChar;
+    string allData = pl->ReadValues();
+    int allDataLength = allData.length() / 8;//Number of chars from hamming.
+    int onlyCRCLength = allDataLength / 70 * 66;//66 is 64 data chars + 15 bit crc value.
+    unsigned char *crcArray = new unsigned char[onlyCRCLength];
+    unsigned char *onlyMessage = new unsigned char[onlyCRCLength];
+    int onlyMessageIndex = 0;
+    int crcArrayIndex = 0;
+    everyChar = pl->Decode(allData);
+    //Before de crcing, we must extra the message and the crc chars only.
+    unsigned char firstSYN;
+    unsigned char lastSYN;
+    unsigned char ctrl;
+
+    for (int frame = 0; frame < allDataLength / 70; frame++)
+    {
+        //Frame is made up of SYN + CTRL + 64 Data chars + 3 crc values(which needs to be a 15 bit value.) + SYN = 70 chars.
+        firstSYN = everyChar[frame * 70];
+        lastSYN = everyChar[(frame + 1) * 70 - 1];
+        ctrl = everyChar[frame * 70 + 1];
+
+        //If the first and last character of a frame are not a SYN, then we have an invalid frame.
+        if (firstSYN != syn || lastSYN != syn)
+            throw 1;
+
+        //Otherwise, we have a valid frame, construct the data to print.
+        for (int partOfFrame = 0; partOfFrame < 64; partOfFrame++)
+        {
+            crcArray[crcArrayIndex] = everyChar[frame * 70 + 2 + partOfFrame];
+            crcArrayIndex++;
+            onlyMessage[onlyMessageIndex] = everyChar[frame * 70 + 2 + partOfFrame];
+            onlyMessageIndex++;
+        }
+
+        unsigned char firstCharForCRC;
+        unsigned char secondCharForCRC;
+        //Now convert the last three crc chars into 2 chars.
+        unsigned char firstCRC = everyChar[frame * 70 + 66];
+        unsigned char secondCRC = everyChar[frame * 70 + 67];
+        unsigned char thirdCRC = everyChar[frame * 70 + 68];
+        firstCharForCRC = (firstCRC << 1) | (secondCRC >> 6);
+        secondCharForCRC = secondCRC << 2;
+        secondCharForCRC |= (((thirdCRC >> 6) & 0x01) << 1);//ZE LAST BIT 4 ZE TURD CRC IS IN THE 7TH BIT LOUCTION, NOT THE FIRST.
+
+        crcArray[crcArrayIndex] = firstCharForCRC;
+        crcArrayIndex++;
+        crcArray[crcArrayIndex] = secondCharForCRC;
+        crcArrayIndex++;
+    }
+    DeCRC(crcArray, allDataLength);//If we don't error out in this call then we have no issues with crc.
+    return onlyMessage;
+}
+
+//Check to make sure that there were no errors in transmission.
+void DataLinkLayer::DeCRC(unsigned char* allFrames, int allDataLength)
+{
+//    //When we get here, we have the 64 data message chars + 2 crc chars (15 bits excluding the first bit which is zero.)
+    int totalFrames = allDataLength / 70;
+    int allDataCharsInEveryFrame = totalFrames * 64;//We only need to return the message bits since we checked the SYN and we will be removing CRC.
+
+    uint16_t dividend = 0x0;    //holds 2 characters at a time to perform xor operation on
+    uint8_t buf = 0x0;       //Contains the next char to use to add bits to the dividend.
+    uint16_t pattern = 0x8005;
+
+    //Load in the first 16 bits and place the first char in the buf.
+    dividend |= allFrames[0];
+    dividend <<= 8;
+    dividend |= allFrames[1];
+    buf = allFrames[2];
+    int textFileDataProcessed = 3;//This is the next char to look it.
+    int numInFrame = 3;
+    int bufferCount = 8;
+    int frame = 1;
+    while (textFileDataProcessed < allDataCharsInEveryFrame)
+    {
+        //While the value in the front is a zero, we need to shift over.
+        while ((dividend & 0x8000) == 0x0)
+        {
+            //If the buffer is empty put a char in the buffer.
+            //HAVE TO CHECK THE BUFFER BEFORE DOING ANYTHING ELSE SINCE THE ELSE IF USES THE VALUE THAT IS IN THE BUFFER.
+            if (bufferCount > 0)
+            {
+                dividend <<= 1;
+                dividend |= (buf >> 7);
+                buf <<= 1;
+                bufferCount--;//Dec the buffer count until the number of buffer bits runs out.
+            }
+                //The buffer is not empty, shift over as long as we are in the same frame.
+                //else if (textFileDataProcessed != 66)
+            else if (numInFrame != 66)
+            {
+                buf = allFrames[textFileDataProcessed];//Load the char and put it into the buffer.
+                textFileDataProcessed++;//This is the next char that we will load into the buffer.
+                numInFrame++;
+
+                //Shift the dividend over 1 so we can or it with the first buffer value.
+                dividend <<= 1;
+                dividend |= (buf >> 7);
+                buf <<= 1;
+                bufferCount = 7;//This is the number of buffer bits that have been processed.
+                if (numInFrame == 66)
+                    bufferCount--;
+            }
+                //We are in a new frame.
+            else
+            {
+                //The CRC is what is left over in the dividend.  If we have 0 then we are valid.
+                if (dividend != 0x0)
+                    throw 99;
+//                allFrames[frame * 67 - 3] = (unsigned char) ((dividend >> 8) & 0x7F);
+//                allFrames[frame * 67 - 2] = (unsigned char) ((dividend >> 1) & 0x7F);
+//                allFrames[frame * 67 - 1] = (unsigned char) ((dividend << 6) & 0x40);
+
+                frame++;//Move to the next frame.
+                //textFileDataProcessed++;//Might be the problem.
+                //Create the next dividend and load the next char into the buffer.
+                dividend = allFrames[textFileDataProcessed];
+                dividend <<= 8;
+                textFileDataProcessed++;
+                dividend |= allFrames[textFileDataProcessed];
+                textFileDataProcessed++;
+                buf = allFrames[textFileDataProcessed];
+                textFileDataProcessed++;
+                bufferCount = 8;
+                numInFrame = 3;
+            }
+        }
+        //We know that the first number in the dividend is a zero.
+        dividend ^= pattern;
+    }
 }
 
 void DataLinkLayer::Hamming(unsigned char *allData, string hostname, int allCharsInFrame, int fullFrames, int extraFrameDataLength, int bitToFlip, bool clientTransmitting)
@@ -420,15 +529,16 @@ void DataLinkLayer::CRC(unsigned char* allData, string hostname, int allCharsInF
             else
             {
                 //The CRC is what is left over in the dividend.
-                dataWithCRC[frame * 64] = (unsigned char) ((dividend >> 8) & 0x7F);
-                dataWithCRC[frame * 64 + 1] = (unsigned char) ((dividend >> 1) & 0x7F);
-                dataWithCRC[frame * 64 + 2] = (unsigned char) ((dividend << 6) & 0x40);
+                dataWithCRC[frame * 67 - 3] = (unsigned char) ((dividend >> 8) & 0x7F);
+                dataWithCRC[frame * 67 - 2] = (unsigned char) ((dividend >> 1) & 0x7F);
+                dataWithCRC[frame * 67 - 1] = (unsigned char) ((dividend << 6) & 0x40);
 
+                frame++;//Move to the next frame.
                 textFileDataProcessed++;
                 //Create the next dividend and load the next char into the buffer.
                 dividend = dataWithCRC[textFileDataProcessed];
-                textFileDataProcessed++;
                 dividend <<= 8;
+                textFileDataProcessed++;
                 dividend |= dataWithCRC[textFileDataProcessed];
                 textFileDataProcessed++;
                 buf = dataWithCRC[textFileDataProcessed];
@@ -441,87 +551,25 @@ void DataLinkLayer::CRC(unsigned char* allData, string hostname, int allCharsInF
         dividend ^= pattern;
     }
 
-//    //Multiple it by 2 so that each data character is made up of 2 hamming chars above and add 3 for SYN + CTRL + SYN.
-//    //unsigned char *frames = new unsigned char[allCharsInFrame];
-//    unsigned char *frames = new unsigned char[allCharsInEveryFrame];
-//
-//    uint32_t currentFrame = 0x0;
-//    uint32_t *singleFrameCRC = new uint32_t[17];//Make it one larger since the last entry will be the padding zeros.
-//    uint64_t pattern = 0x8005;
-//    uint64_t crcBuffer = 0x0;
-//    int theCurrentFrameNum = 0;
-//    int theCurrentSetOf4Chars = 0;
-//    //We are looking at a frame of 64 chars.
-//    for (int fullFrameIteration = 0; fullFrameIteration < fullFrames; fullFrameIteration++)
-//    {
-//        theCurrentFrameNum = fullFrameIteration * 64;
-//        //Skip over every 4 chars.
-//        for (int setOf4Chars = 0; setOf4Chars < 16; setOf4Chars++)
-//        {
-//            theCurrentSetOf4Chars = setOf4Chars * 4;
-//            //setOfEightChars grabs 4 chars.
-//            currentFrame = 0x0;//Reset currentFrame.
-//            //Grab 4 chars at a time since the largest uint value we have is uint32.
-//            for (int z32BitsFor4Chars = 0; z32BitsFor4Chars < 4; z32BitsFor4Chars++)
-//            {
-//                //Grab the four chars before skipping and build a uint32 array entry.
-//                currentFrame |= (uint8_t)((unsigned char)allData[theCurrentFrameNum + theCurrentSetOf4Chars + z32BitsFor4Chars]);
-//                if (z32BitsFor4Chars != 3)//We don't need to shift on the last oring since we won't be adding anything else.
-//                    currentFrame <<= 8;
-//            }
-//            singleFrameCRC[setOf4Chars] = currentFrame;
-//        }
-//        //Now we have a uint64 that has an entire frame of 64 data characters.
-//        crcBuffer = singleFrameCRC[0];
-//        crcBuffer <<= 32;
-//        crcBuffer |= singleFrameCRC[1];
-//        uint64_t tempPattern = 0x0;
-//        uint64_t tempRemainder = 0x0;
-//        bool notDone = true;
-//        int lookForOnesStartingHere = 63;
-//        int crcBufferShift = 0;
-//        //Get the first tempRemainder value.
-//        for (lookForOnesStartingHere; lookForOnesStartingHere > 0; lookForOnesStartingHere--)
-//        {
-//            //As soon as we find the first 1 we know how far over the patten needs to be shifted.
-//            if((crcBuffer >> lookForOnesStartingHere) & 0x1)
-//            {
-//                break;
-//            }
-//            else
-//            {
-//                //We have a zero so we must offset.  If this value exceeds 48, then we need to fill the crcBuffer.  If we finished the array then we are done.
-//                crcBufferShift++;
-//            }
-//        }
-//        //We have found the offset that we need to shift over.
-//        //Shift the crc buffer down 48 - crcBufferShift.
-//        if (tempRemainder == 0)//First iteration of getting remainder.
-//            tempRemainder = (crcBuffer >> (48 - crcBufferShift)) ^ pattern;
-//
-//        while(notDone) //Do this while we have a frame of 512 bits to look at.
-//        {
-//            int valuesToBringDown = 0;
-//            //uint8_t tempRemainderFirst1Occur = 0xF;//Start at position 15
-//            for (int tempRemainderFirst1Occur = 15; tempRemainderFirst1Occur >= 0; tempRemainderFirst1Occur--)
-//            {
-//                if ((tempRemainder >> tempRemainderFirst1Occur) & 0x1)
-//                {
-//                    //We are done, we have found the first 1 in the tempRemainder.  Only bring down 1 zero.
-//                    break;
-//                }
-//                //We found a zero so we must shift over 1 place.
-//                else
-//                {
-//                    valuesToBringDown++;
-//                    lookForOnesStartingHere--;
-//                }
-//            }
-//            //shift the remainder up a valuesToBringDown times so those values can be brought down.
-//            tempRemainder <<= valuesToBringDown;
-//            tempRemainder |= ((crcBuffer >> (lookForOnesStartingHere - 16) & 0x1));
-//            tempRemainder ^= pattern;
-//            int x = 0;
-//        }
-//    }
+    //Now the dataWithCRC contains the data (64 chars) + crc (3 chars).  Frame it.
+    int allFramesWithAllBytes = totalFrames * 70;//Every full frame has 70 chars. SYN + CTRL + 64 Data chars + 3 CRC chars + SYN
+    unsigned char *allFrames = new unsigned char[allFramesWithAllBytes];
+    for (int loc = 0; loc < totalFrames; loc++)
+    {
+        allFrames[loc * 70] = '\x16';
+        allFrames[loc * 70 + 1] = (unsigned char) 64;
+        for (int characterLoc = 0; characterLoc < 67; characterLoc++)
+        {
+            //Offset by 2 handles the SYN and CTRL.
+            //Get the char from the input file.
+            unsigned char theChar = dataWithCRC[loc * 67 + characterLoc];//Mul by 67 since dataWithCRC contains the original file data in addition to the crc chars.
+            allFrames[(loc) * 70 + characterLoc + 2] = theChar;
+        }
+        allFrames[(loc + 1) * 70 - 1] = '\x16';
+    }
+
+    PhysicalLayer *pl = new PhysicalLayer(clientTransmitting, hostname);
+
+    int bitToFlip = -1;
+    pl->Encode(allFrames, allFramesWithAllBytes, bitToFlip);
 }

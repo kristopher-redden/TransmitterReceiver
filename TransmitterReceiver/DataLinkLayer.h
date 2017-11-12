@@ -13,10 +13,12 @@ class DataLinkLayer
 public:
     void Framing(unsigned char *allData, string hostname, int allCharsInFrame, int fullFrames, int extraFrameDataLength, int bitToFlip, bool hamming, bool clientTransmitting);
     unsigned char* Deframing(bool hamming, bool clientTransmitter, string hostname);
+    unsigned char* DeframingCRC(bool clientTransmitter, string hostname);
     void Hamming(unsigned char *allData, string hostname, int allCharsInFrame, int fullFrames, int extraFrameDataLength, int bitToFlip, bool clientTransmitting);
     unsigned char* DeHamming(unsigned char* charArrayDoubledData, int allDataLength);
     int NumberOfPrintableChars();
     void CRC(unsigned char* allData, string hostname, int allCharsInFrame, int fullFrames, int extraFrameDataLength, bool clientTransmitting);
+    void DeCRC(unsigned char* allFrames, int allDataLength);
     DataLinkLayer();
     ~DataLinkLayer();
 private:

@@ -138,7 +138,7 @@ int main(int argc, char* argv[]) {
         string fileToReadFrom = argv[3];
         try
         {
-            ApplicationLayer al;
+            ApplicationLayer al;    //              ham,  clientTrans
             al.CommandTCrc(hostname, fileToReadFrom, false, true);
         }
         catch (int exception)
@@ -154,7 +154,7 @@ int main(int argc, char* argv[]) {
         string fileToWriteTo = argv[3];
         try
         {
-            ApplicationLayer al;
+            ApplicationLayer al;    //              ham, clientTrans
             al.CommandRHam(hostname, fileToWriteTo, true, false);
         }
         catch (int exception)
@@ -174,7 +174,27 @@ int main(int argc, char* argv[]) {
     }
     else if (command == "-rcrc")
     {
-
+        string hostname = argv[2];
+        string fileToWriteTo = argv[3];
+        try
+        {
+            ApplicationLayer al;    //              ham,  clientTrans
+            al.CommandRCrc(hostname, fileToWriteTo, false, false);
+        }
+        catch (int exception)
+        {
+            string message;
+            if (exception == 3)
+            {
+                message = "Transmitter With Error: Input file or output file is invalid.";
+            }
+            else if (exception == 4)
+            {
+                message = "Transmitter With Error: File that was written to has no length.";
+            }
+            cerr << message;
+            exit(exception);
+        }
     }
     else
     {
