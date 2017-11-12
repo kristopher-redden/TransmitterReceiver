@@ -16,6 +16,8 @@ public:
     void CommandTWithError(string file1, string file2);
     void CommandTHam(string hostname, string fileToReadFrom, bool ham, bool clientTransmitting);
     void CommandRHam(string hostname, string fileToWriteTo, bool ham, bool clientTransmitting);
+    void CommandTCrc(string hostname, string fileToReadFrom, bool crc, bool clientTransmitting);
+    void CommandRCrc(string hostname, string fileToWriteTo, bool crc, bool clientTransmitting);
     ApplicationLayer();
     ~ApplicationLayer();
 

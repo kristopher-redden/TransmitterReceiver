@@ -97,7 +97,7 @@ void DataLinkLayer::Framing(unsigned char* allData, string hostname, int allChar
     if (hamming)
         Hamming(allData, hostname, allCharsInFrame, fullFrames, extraFrameDataLength, bitToFlip, clientTransmitting);
     else
-        CRC();
+        CRC(allData, hostname, allCharsInFrame, fullFrames, extraFrameDataLength, clientTransmitting);
 //    unsigned char *frames = new unsigned char[allCharsInFrame];
 //    for (int loc = 0; loc < fullFrames; loc++)
 //    {
@@ -342,7 +342,171 @@ int DataLinkLayer::NumberOfPrintableChars()
 {
     return dehammingCharCount;
 }
-void DataLinkLayer::CRC()
-{
 
+void DataLinkLayer::CRC(unsigned char* allData, string hostname, int allCharsInFrame, int fullFrames, int extraFrameDataLength, bool clientTransmitting)
+{
+    int fullFrameLength = fullFrames * 67 + 1;//Every full frame has 67 bytes. 64 Data chars + 3 CRC
+    //int extraFrameLength = extraFrameDataLength + 3;//The extraFrameDataLength is the data length of the extra frame + the 3 CRC values.
+    //int allDataCharsInEveryFrame = fullFrameLength + extraFrameLength;
+
+    unsigned char* dataWithCRC = new unsigned char[allDataCharsInEveryFrame];
+    uint16_t dividend = 0x0;    //holds 2 characters at a time to perform xor operation on
+    uint8_t buf = 0x0;       //Contains the next char to use to add bits to the dividend.
+    uint16_t pattern = 0x8005;
+    int charCount = 0;
+    for(int textFileLoc = 0, crcArrayLoc = 0; textFileLoc < allDataCharsInEveryFrame; textFileLoc++, crcArrayLoc++)
+    {
+        //Keep adding chars to the crc array.
+        dataWithCRC[crcArrayLoc] = allData[textFileLoc];
+        charCount++;
+        if(charCount == 64)
+        {
+            //Once the mod is equal to 0, we have a full frame.
+            dataWithCRC[crcArrayLoc + 1] = '\0';
+            dataWithCRC[crcArrayLoc + 2] = '\0';
+            dataWithCRC[crcArrayLoc + 3] = '\0';
+            crcArrayLoc += 3;
+            charCount = 0;
+        }
+    }
+
+    dividend |= dataWithCRC[0];
+    dividend <<= 8;
+    dividend |= dataWithCRC[1];
+    buf = dataWithCRC[2];
+    int textFileDataProcessed = 3;//This is the next char to look it.
+    int bufferCount = 8;
+    int frame = 1;
+    while (textFileDataProcessed < 134)//134
+    {
+        //While the value in the front is a zero, we need to shift over.
+        while ((dividend & 0x8000) == 0x0)
+        {
+            //If the buffer is empty put a char in the buffer.
+            if (bufferCount > 0)
+            {
+                dividend <<= 1;
+                dividend |= (buf >> 7);
+                buf <<= 1;
+                bufferCount--;//Dec the buffer count until the number of buffer bits runs out.
+            }
+            //The buffer is not empty, shift over as long as we are in the same frame.
+            else if (textFileDataProcessed != 66)
+            {
+                buf = dataWithCRC[textFileDataProcessed];//Load the char and put it into the buffer.
+                textFileDataProcessed++;//This is the next char that we will load into the buffer.
+
+                //Shift the dividend over 1 so we can or it with the first buffer value.
+                dividend <<= 1;
+                dividend |= (buf >> 7);
+                buf <<= 1;
+                bufferCount = 7;//This is the number of buffer bits that have been processed.
+                if (textFileDataProcessed == 65)
+                    bufferCount--;
+            }
+            //We are in a new frame.
+            else
+            {
+                //The CRC is what is left over in the dividend.
+                dataWithCRC[frame * 64] = (unsigned char) ((dividend >> 14) & 0x1);
+                dataWithCRC[frame * 64 + 1] = (unsigned char) ((dividend >> 7) & 0x7F);
+                dataWithCRC[frame * 64 + 2] = (unsigned char) (dividend & 0x7F);
+
+                //Create the next dividend and load the next char into the buffer.
+                dividend = dataWithCRC[textFileDataProcessed];
+                textFileDataProcessed++;
+                dividend <<= 8;
+                dividend |= dataWithCRC[textFileDataProcessed];
+                textFileDataProcessed++;
+                buf = dataWithCRC[textFileDataProcessed];
+                bufferCount = 8;
+            }
+        }
+        //We know that the first number in the dividend is a zero.
+        dividend ^= pattern;
+    }
+
+//    //Multiple it by 2 so that each data character is made up of 2 hamming chars above and add 3 for SYN + CTRL + SYN.
+//    //unsigned char *frames = new unsigned char[allCharsInFrame];
+//    unsigned char *frames = new unsigned char[allCharsInEveryFrame];
+//
+//    uint32_t currentFrame = 0x0;
+//    uint32_t *singleFrameCRC = new uint32_t[17];//Make it one larger since the last entry will be the padding zeros.
+//    uint64_t pattern = 0x8005;
+//    uint64_t crcBuffer = 0x0;
+//    int theCurrentFrameNum = 0;
+//    int theCurrentSetOf4Chars = 0;
+//    //We are looking at a frame of 64 chars.
+//    for (int fullFrameIteration = 0; fullFrameIteration < fullFrames; fullFrameIteration++)
+//    {
+//        theCurrentFrameNum = fullFrameIteration * 64;
+//        //Skip over every 4 chars.
+//        for (int setOf4Chars = 0; setOf4Chars < 16; setOf4Chars++)
+//        {
+//            theCurrentSetOf4Chars = setOf4Chars * 4;
+//            //setOfEightChars grabs 4 chars.
+//            currentFrame = 0x0;//Reset currentFrame.
+//            //Grab 4 chars at a time since the largest uint value we have is uint32.
+//            for (int z32BitsFor4Chars = 0; z32BitsFor4Chars < 4; z32BitsFor4Chars++)
+//            {
+//                //Grab the four chars before skipping and build a uint32 array entry.
+//                currentFrame |= (uint8_t)((unsigned char)allData[theCurrentFrameNum + theCurrentSetOf4Chars + z32BitsFor4Chars]);
+//                if (z32BitsFor4Chars != 3)//We don't need to shift on the last oring since we won't be adding anything else.
+//                    currentFrame <<= 8;
+//            }
+//            singleFrameCRC[setOf4Chars] = currentFrame;
+//        }
+//        //Now we have a uint64 that has an entire frame of 64 data characters.
+//        crcBuffer = singleFrameCRC[0];
+//        crcBuffer <<= 32;
+//        crcBuffer |= singleFrameCRC[1];
+//        uint64_t tempPattern = 0x0;
+//        uint64_t tempRemainder = 0x0;
+//        bool notDone = true;
+//        int lookForOnesStartingHere = 63;
+//        int crcBufferShift = 0;
+//        //Get the first tempRemainder value.
+//        for (lookForOnesStartingHere; lookForOnesStartingHere > 0; lookForOnesStartingHere--)
+//        {
+//            //As soon as we find the first 1 we know how far over the patten needs to be shifted.
+//            if((crcBuffer >> lookForOnesStartingHere) & 0x1)
+//            {
+//                break;
+//            }
+//            else
+//            {
+//                //We have a zero so we must offset.  If this value exceeds 48, then we need to fill the crcBuffer.  If we finished the array then we are done.
+//                crcBufferShift++;
+//            }
+//        }
+//        //We have found the offset that we need to shift over.
+//        //Shift the crc buffer down 48 - crcBufferShift.
+//        if (tempRemainder == 0)//First iteration of getting remainder.
+//            tempRemainder = (crcBuffer >> (48 - crcBufferShift)) ^ pattern;
+//
+//        while(notDone) //Do this while we have a frame of 512 bits to look at.
+//        {
+//            int valuesToBringDown = 0;
+//            //uint8_t tempRemainderFirst1Occur = 0xF;//Start at position 15
+//            for (int tempRemainderFirst1Occur = 15; tempRemainderFirst1Occur >= 0; tempRemainderFirst1Occur--)
+//            {
+//                if ((tempRemainder >> tempRemainderFirst1Occur) & 0x1)
+//                {
+//                    //We are done, we have found the first 1 in the tempRemainder.  Only bring down 1 zero.
+//                    break;
+//                }
+//                //We found a zero so we must shift over 1 place.
+//                else
+//                {
+//                    valuesToBringDown++;
+//                    lookForOnesStartingHere--;
+//                }
+//            }
+//            //shift the remainder up a valuesToBringDown times so those values can be brought down.
+//            tempRemainder <<= valuesToBringDown;
+//            tempRemainder |= ((crcBuffer >> (lookForOnesStartingHere - 16) & 0x1));
+//            tempRemainder ^= pattern;
+//            int x = 0;
+//        }
+//    }
 }

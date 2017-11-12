@@ -22,8 +22,6 @@ ApplicationLayer::~ApplicationLayer()
 //file1 is the file to read from, file2 is the file to write to.
 void ApplicationLayer::CommandT(string hostname, string fileToReadFrom, int bitToFlip, bool ham, bool clientTransmitting)
 {
-    //Clear out the file in case it exists, this way we can simply append to it later on.
-    //ofstream ofs(file2, ios::out | ios::trunc);
     DataLinkLayer dl;
     ifstream ifsLeng(fileToReadFrom, ios::in | ios::ate);
     int fileLength = ifsLeng.tellg();
@@ -31,7 +29,6 @@ void ApplicationLayer::CommandT(string hostname, string fileToReadFrom, int bitT
 
     //Open the file and get the data length of the extra frame's.
     ifstream ifs (fileToReadFrom, ios::in | ios::binary);
-    int extraFrameCharLength = fileLength % 64;
     if (ifs.good())
     {
         char character;
@@ -112,6 +109,45 @@ void ApplicationLayer::CommandTHam(string hostname, string fileToReadFrom, bool 
 void ApplicationLayer::CommandRHam(string hostname, string fileToWriteTo, bool ham, bool clientTransmitting)
 {
     CommandR(hostname, fileToWriteTo, ham, clientTransmitting);
+}
+
+void ApplicationLayer::CommandTCrc(string hostname, string fileToReadFrom, bool crc, bool clientTransmitting)
+{
+    int bitToFlip = -1;
+    DataLinkLayer dl;
+    ifstream ifsLeng(fileToReadFrom, ios::in | ios::ate);
+    int fileLength = ifsLeng.tellg();
+    ifsLeng.close();
+
+    //Open the file and get the data length of the extra frame's.
+    ifstream ifs (fileToReadFrom, ios::in | ios::binary);
+    if (ifs.good())
+    {
+        char character;
+        //We will have 64 chars in the frame, get the data for 2 - 65.
+        int fullFrames = fileLength / 64;
+        int extraFrameDataLength = fileLength % 64;
+        int allCharactersInFrame = fullFrames * 67 + extraFrameDataLength + 3;
+        int onlyDataCharacters = fullFrames * 64 + extraFrameDataLength;
+        unsigned char *chars = new unsigned char[onlyDataCharacters];
+        int charCount = 0;
+        while (ifs.get(character))
+        {
+            //Location 0 and 1 is SYN and ctrl, location 66 is the other SYN Char.
+            chars[charCount] = character;
+            charCount++;
+        }
+
+        dl.Framing(chars, hostname, allCharactersInFrame, fullFrames, extraFrameDataLength, bitToFlip, crc, clientTransmitting);
+
+        ifs.close();
+    }
+    else
+        throw 3;
+}
+void ApplicationLayer::CommandRCrc(string hostname, string fileToWriteTo, bool crc, bool clientTransmitting)
+{
+
 }
 
 

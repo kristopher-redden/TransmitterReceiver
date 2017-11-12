@@ -134,7 +134,19 @@ int main(int argc, char* argv[]) {
     }
     else if (command == "-tcrc")
     {
-
+        string hostname = argv[2];
+        string fileToReadFrom = argv[3];
+        try
+        {
+            ApplicationLayer al;
+            al.CommandTCrc(hostname, fileToReadFrom, false, true);
+        }
+        catch (int exception)
+        {
+            string message;
+            cerr << message;
+            exit(exception);
+        }
     }
     else if (command == "-rh")
     {

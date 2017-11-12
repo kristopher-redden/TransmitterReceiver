@@ -77,7 +77,6 @@ PhysicalLayer::PhysicalLayer(bool clientTrans, string hostname)
                   s, sizeof s);
         printf("client: connecting to %s\n", s);\
 
-
         freeaddrinfo(servinfo); // all done with this structure
     }
     else {
@@ -197,7 +196,7 @@ string PhysicalLayer::ReadValues()
     while( (read_size = recv(new_fd , buf , MAXDATASIZE + 1 , 0)) > 0 )
     {
         buf[read_size] = '\0'; //Clear last character of buf
-        wcout << buf << endl;
+        //wcout << buf << endl;
         for (int i = 0; i < MAXDATASIZE + 1; i++)
         {
             if (buf[i] != '\0')
@@ -295,7 +294,7 @@ void PhysicalLayer::Encode(unsigned char* frames, int allCharsInFrame, int bitTo
             //We have filled an entire transmission frame, send it.
             locTransFrame = 0; //Reset to zero since we will be starting a new transmission frame.
             unsigned char *charArray = new unsigned char[MAXDATASIZE + 1];
-            charArray[MAXDATASIZE + 1] = '\0';
+            charArray[MAXDATASIZE + 1] = '\0';//todo:Outside of array bound????
 
             int charNum = 0;
             while((charNum != (MAXDATASIZE + 1)) && (completeTransmissionFrame[charNum] != '\0'))
@@ -327,7 +326,9 @@ void PhysicalLayer::Encode(unsigned char* frames, int allCharsInFrame, int bitTo
             perror("Sending failed.");
         //Close the socket once all of the transmission have been sent.
         close(sockfd);
+        return;
     }
+    close(sockfd);
 }
 
 //Convert the 1's and 0's to chars.
