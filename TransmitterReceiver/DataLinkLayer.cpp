@@ -113,9 +113,6 @@ unsigned char* DataLinkLayer::Deframing(bool hamming, bool clientTransmitter, st
     hammingDoubledArray = pl->Decode(allData);
     unsigned char *unhammingedM1Frame = DeHamming(hammingDoubledArray, allDataLength);
 
-//    int fullFrames = allDataLength / 131;
-//    int extraFrame = allDataLength % 131;
-//    int originalFrameM1 = fullFrames * 67 + (extraFrame - 3) / 2 + 3; //Get rid of the SYN, CTRL, and SYN to get actual data count.
     int fullFrameCount = everyByteInEveryFrame / 67;
     int lastFrameLength = everyByteInEveryFrame % 67;
     int lastFrameChecked = -1;
@@ -216,7 +213,7 @@ unsigned char* DataLinkLayer::DeframingCRC(bool clientTransmitter, string hostna
         unsigned char thirdCRC = everyChar[frame * 70 + 68];
         firstCharForCRC = (firstCRC << 1) | (secondCRC >> 6);
         secondCharForCRC = secondCRC << 2;
-        secondCharForCRC |= (((thirdCRC >> 6) & 0x01) << 1);//ZE LAST BIT 4 ZE TURD CRC IS IN THE 7TH BIT LOUCTION, NOT THE FIRST.
+        secondCharForCRC |= (((thirdCRC >> 6) & 0x01) << 1);//ZE LAST BIT 4 ZE TURD CRC IS IN THE 7TH BIT LOUCTION, NOT ZE THIRST.
 
         crcArray[crcArrayIndex] = firstCharForCRC;
         crcArrayIndex++;
@@ -283,9 +280,6 @@ void DataLinkLayer::DeCRC(unsigned char* allFrames, int allDataLength)
                 //The CRC is what is left over in the dividend.  If we have 0 then we are valid.
                 if (dividend != 0x0)
                     throw 99;
-//                allFrames[frame * 67 - 3] = (unsigned char) ((dividend >> 8) & 0x7F);
-//                allFrames[frame * 67 - 2] = (unsigned char) ((dividend >> 1) & 0x7F);
-//                allFrames[frame * 67 - 1] = (unsigned char) ((dividend << 6) & 0x40);
 
                 frame++;//Move to the next frame.
                 //textFileDataProcessed++;//Might be the problem.
@@ -459,9 +453,6 @@ void DataLinkLayer::CRC(unsigned char* allData, string hostname, int allCharsInF
         totalFrames++;
     int allDataCharsInEveryFrame = totalFrames * 67;
     int onlyDataChars = fullFrames * 64 + extraFrameDataLength;
-    //int fullFrameLength = fullFrames * 64;//Every full frame has 67 bytes. 64 Data chars + 3 CRC
-    //int extraFrameLength = extraFrameDataLength;//The extraFrameDataLength is the data length of the extra frame + the 3 CRC values.
-    //int allDataCharsInEveryFrame = fullFrameLength + extraFrameLength;
 
     unsigned char* dataWithCRC = new unsigned char[allDataCharsInEveryFrame];
     for (int i = 0; i < allDataCharsInEveryFrame; i++)

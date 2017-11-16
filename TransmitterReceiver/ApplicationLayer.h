@@ -13,7 +13,6 @@ class ApplicationLayer
 public:
     void CommandT(string hostname, string fileToReadFrom, int bitToFlip, bool NOTNeeded, bool NotNeeded2);
     void CommandR(string file1, string file2, bool ham, bool clientTransmitting);
-    void CommandTWithError(string file1, string file2);
     void CommandTHam(string hostname, string fileToReadFrom, bool ham, bool clientTransmitting);
     void CommandRHam(string hostname, string fileToWriteTo, bool ham, bool clientTransmitting);
     void CommandTCrc(string hostname, string fileToReadFrom, bool crc, bool clientTransmitting);

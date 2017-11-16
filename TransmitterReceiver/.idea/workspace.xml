@@ -28,18 +28,18 @@
       <file leaf-file-name="main.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/main.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="393">
-              <caret line="180" column="38" lean-forward="false" selection-start-line="180" selection-start-column="38" selection-end-line="180" selection-end-column="38" />
+            <state relative-caret-position="234">
+              <caret line="15" column="58" lean-forward="false" selection-start-line="15" selection-start-column="58" selection-end-line="15" selection-end-column="58" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="PhysicalLayer.cpp" pinned="false" current-in-tab="false">
+      <file leaf-file-name="PhysicalLayer.cpp" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/PhysicalLayer.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="171">
-              <caret line="336" column="0" lean-forward="false" selection-start-line="336" selection-start-column="0" selection-end-line="336" selection-end-column="0" />
+            <state relative-caret-position="-2554">
+              <caret line="213" column="71" lean-forward="false" selection-start-line="213" selection-start-column="71" selection-end-line="213" selection-end-column="71" />
               <folding>
                 <element signature="e#44#70#0" expanded="true" />
               </folding>
@@ -50,7 +50,7 @@
       <file leaf-file-name="PhysicalLayer.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/PhysicalLayer.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="380">
+            <state relative-caret-position="704">
               <caret line="56" column="24" lean-forward="false" selection-start-line="56" selection-start-column="24" selection-end-line="56" selection-end-column="24" />
               <folding>
                 <element signature="e#202#220#0" expanded="true" />
@@ -61,11 +61,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="DataLinkLayer.cpp" pinned="false" current-in-tab="true">
+      <file leaf-file-name="DataLinkLayer.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/DataLinkLayer.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="155">
-              <caret line="218" column="130" lean-forward="false" selection-start-line="218" selection-start-column="130" selection-end-line="218" selection-end-column="130" />
+            <state relative-caret-position="-1484">
+              <caret line="454" column="63" lean-forward="false" selection-start-line="454" selection-start-column="63" selection-end-line="454" selection-end-column="63" />
               <folding>
                 <element signature="e#44#70#0" expanded="true" />
               </folding>
@@ -76,7 +76,7 @@
       <file leaf-file-name="DataLinkLayer.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/DataLinkLayer.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="109">
+            <state relative-caret-position="360">
               <caret line="20" column="8" lean-forward="false" selection-start-line="20" selection-start-column="8" selection-end-line="20" selection-end-column="8" />
               <folding />
             </state>
@@ -86,8 +86,8 @@
       <file leaf-file-name="ApplicationLayer.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/ApplicationLayer.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="190">
-              <caret line="158" column="26" lean-forward="true" selection-start-line="158" selection-start-column="26" selection-end-line="158" selection-end-column="26" />
+            <state relative-caret-position="212">
+              <caret line="92" column="31" lean-forward="false" selection-start-line="92" selection-start-column="23" selection-end-line="92" selection-end-column="31" />
               <folding>
                 <element signature="e#44#73#0" expanded="true" />
               </folding>
@@ -98,8 +98,8 @@
       <file leaf-file-name="ApplicationLayer.h" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/ApplicationLayer.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="324">
-              <caret line="18" column="54" lean-forward="false" selection-start-line="18" selection-start-column="54" selection-end-line="18" selection-end-column="54" />
+            <state relative-caret-position="252">
+              <caret line="14" column="81" lean-forward="false" selection-start-line="14" selection-start-column="81" selection-end-line="14" selection-end-column="81" />
               <folding />
             </state>
           </provider>
@@ -109,10 +109,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>buf</find>
-      <find>send</find>
-      <find>connectionestablished</find>
-      <find>fullFrameIteration</find>
       <find>new_fd = a</find>
       <find>waitfor</find>
       <find>waitforconnection</find>
@@ -132,13 +128,17 @@
       <find>encode(</find>
       <find>framing(</find>
       <find>crc</find>
-      <find>decrc</find>
       <find>decode(</find>
       <find>decrc(</find>
       <find>allframes</find>
       <find>commandr</find>
       <find>crc(</find>
       <find>third</find>
+      <find>throw 99</find>
+      <find>decrc</find>
+      <find>deframingcrc</find>
+      <find>commandt</find>
+      <find>turd</find>
     </findStrings>
   </component>
   <component name="IdeDocumentHistory">
@@ -150,12 +150,12 @@
         <option value="$PROJECT_DIR$/PhysicalLater.h" />
         <option value="$PROJECT_DIR$/applicationLayer.cpp" />
         <option value="$PROJECT_DIR$/PhysicalLayer.h" />
-        <option value="$PROJECT_DIR$/ApplicationLayer.h" />
-        <option value="$PROJECT_DIR$/PhysicalLayer.cpp" />
-        <option value="$PROJECT_DIR$/main.cpp" />
         <option value="$PROJECT_DIR$/DataLinkLayer.h" />
+        <option value="$PROJECT_DIR$/main.cpp" />
         <option value="$PROJECT_DIR$/ApplicationLayer.cpp" />
+        <option value="$PROJECT_DIR$/ApplicationLayer.h" />
         <option value="$PROJECT_DIR$/DataLinkLayer.cpp" />
+        <option value="$PROJECT_DIR$/PhysicalLayer.cpp" />
       </list>
     </option>
   </component>
@@ -209,7 +209,7 @@
     <configuration name="Build All" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" CONFIG_NAME="Debug" EXPLICIT_BUILD_TARGET_NAME="all">
       <envs />
     </configuration>
-    <configuration name="TransmitterReceiver" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="-rcrc kristopher-VirtualBox /home/kristopher/Documents/TestTextFile/KingJamesCRCOutput.txt" PASS_PARENT_ENVS_2="true" PROJECT_NAME="TransmitterReceiver" TARGET_NAME="TransmitterReceiver" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="TransmitterReceiver" RUN_TARGET_NAME="TransmitterReceiver">
+    <configuration name="TransmitterReceiver" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="-tcrc kristopher-VirtualBox /home/kristopher/Documents/TestTextFile/KingJames.txt" PASS_PARENT_ENVS_2="true" PROJECT_NAME="TransmitterReceiver" TARGET_NAME="TransmitterReceiver" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="TransmitterReceiver" RUN_TARGET_NAME="TransmitterReceiver">
       <envs />
     </configuration>
     <list size="2">
@@ -259,30 +259,32 @@
       <workItem from="1510243603147" duration="20035000" />
       <workItem from="1510336667775" duration="21250000" />
       <workItem from="1510411637189" duration="24732000" />
-      <workItem from="1510498971916" duration="25243000" />
+      <workItem from="1510498971916" duration="25733000" />
+      <workItem from="1510849121145" duration="840000" />
+      <workItem from="1510852851764" duration="485000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="227940000" />
+    <option name="totallyTimeSpent" value="229755000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="65" y="-4" width="1535" height="799" extended-state="6" />
+    <frame x="65" y="-4" width="1537" height="807" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.070358306" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.35395685" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25755396" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25755396" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32374102" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2503597" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Data View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.35395685" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
@@ -320,44 +322,7 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/PhysicalLayer.cpp</url>
-          <line>227</line>
-          <option name="timeStamp" value="263" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/main.cpp</url>
-          <line>112</line>
-          <option name="timeStamp" value="274" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/main.cpp</url>
-          <line>141</line>
-          <option name="timeStamp" value="327" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/DataLinkLayer.cpp</url>
-          <line>573</line>
-          <option name="timeStamp" value="328" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/ApplicationLayer.cpp</url>
-          <line>140</line>
-          <option name="timeStamp" value="335" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/DataLinkLayer.cpp</url>
-          <line>96</line>
-          <option name="timeStamp" value="336" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/DataLinkLayer.cpp</url>
-          <line>284</line>
-          <option name="timeStamp" value="368" />
-        </line-breakpoint>
-      </breakpoints>
-      <option name="time" value="369" />
+      <option name="time" value="372" />
     </breakpoint-manager>
     <watches-manager>
       <configuration name="CMakeRunConfiguration">
@@ -709,21 +674,56 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="317">
           <caret line="73" column="0" lean-forward="false" selection-start-line="73" selection-start-column="0" selection-end-line="73" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/DataLinkLayer.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="360">
+          <caret line="20" column="8" lean-forward="false" selection-start-line="20" selection-start-column="8" selection-end-line="20" selection-end-column="8" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/main.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="234">
+          <caret line="15" column="58" lean-forward="false" selection-start-line="15" selection-start-column="58" selection-end-line="15" selection-end-column="58" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/ApplicationLayer.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="324">
-          <caret line="18" column="54" lean-forward="false" selection-start-line="18" selection-start-column="54" selection-end-line="18" selection-end-column="54" />
+        <state relative-caret-position="252">
+          <caret line="14" column="81" lean-forward="false" selection-start-line="14" selection-start-column="81" selection-end-line="14" selection-end-column="81" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ApplicationLayer.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="212">
+          <caret line="92" column="31" lean-forward="false" selection-start-line="92" selection-start-column="23" selection-end-line="92" selection-end-column="31" />
+          <folding>
+            <element signature="e#44#73#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/DataLinkLayer.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1484">
+          <caret line="454" column="63" lean-forward="false" selection-start-line="454" selection-start-column="63" selection-end-line="454" selection-end-column="63" />
+          <folding>
+            <element signature="e#44#70#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/PhysicalLayer.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="380">
+        <state relative-caret-position="704">
           <caret line="56" column="24" lean-forward="false" selection-start-line="56" selection-start-column="24" selection-end-line="56" selection-end-column="24" />
           <folding>
             <element signature="e#202#220#0" expanded="true" />
@@ -733,46 +733,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/main.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="393">
-          <caret line="180" column="38" lean-forward="false" selection-start-line="180" selection-start-column="38" selection-end-line="180" selection-end-column="38" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/PhysicalLayer.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="171">
-          <caret line="336" column="0" lean-forward="false" selection-start-line="336" selection-start-column="0" selection-end-line="336" selection-end-column="0" />
-          <folding>
-            <element signature="e#44#70#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/DataLinkLayer.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="109">
-          <caret line="20" column="8" lean-forward="false" selection-start-line="20" selection-start-column="8" selection-end-line="20" selection-end-column="8" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/ApplicationLayer.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="190">
-          <caret line="158" column="26" lean-forward="true" selection-start-line="158" selection-start-column="26" selection-end-line="158" selection-end-column="26" />
-          <folding>
-            <element signature="e#44#73#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/DataLinkLayer.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="155">
-          <caret line="218" column="130" lean-forward="false" selection-start-line="218" selection-start-column="130" selection-end-line="218" selection-end-column="130" />
+        <state relative-caret-position="-2554">
+          <caret line="213" column="71" lean-forward="false" selection-start-line="213" selection-start-column="71" selection-end-line="213" selection-end-column="71" />
           <folding>
             <element signature="e#44#70#0" expanded="true" />
           </folding>

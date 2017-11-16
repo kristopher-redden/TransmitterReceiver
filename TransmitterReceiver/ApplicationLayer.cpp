@@ -80,27 +80,6 @@ void ApplicationLayer::CommandR(string hostname, string fileToWriteTo, bool ham,
 
 }
 
-//file1 is the file to read from, file2 is the file to write to.
-void ApplicationLayer::CommandTWithError(string file1, string file2)
-{
-//    ifstream ifs(file1, ios::in | ios::ate);
-//    if (ifs.good())
-//    {
-//        int fileLength = ifs.tellg();
-//        int fullFrames = fileLength / 64;
-//        int extraFrameDataLength = fileLength % 64;
-//        int allCharactersInFrame = fullFrames * 67 + extraFrameDataLength + 3;
-//        srand(time(NULL));
-//        ifs.close();
-//        //Generate a random number that is between 0 and the fileLength.
-//        int bitToFlip = rand() % (allCharactersInFrame * 8);//Each char is made up of 8 1's and 0's.
-//        //Generate the file of 1's and 0's.
-//        //CommandT(file1, file2, bitToFlip);
-//    }
-//    else
-//        throw 3;
-}
-
 void ApplicationLayer::CommandTHam(string hostname, string fileToReadFrom, bool ham, bool clientTransmitting)
 {
     CommandT(hostname, fileToReadFrom, -1, ham, clientTransmitting);

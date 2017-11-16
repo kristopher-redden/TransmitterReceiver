@@ -212,8 +212,6 @@ string PhysicalLayer::ReadValues()
     if(read_size == 0)
     {
         return entireEncodedFile;//We are done receiving transmissions.
-//        puts("Client disconnected");
-//        fflush(stdout);
     }
     else if(read_size == -1)
     {
